@@ -53,6 +53,7 @@ app.get("/createsession", async (req, resp) => {
     console.log("creating Session", session);
 
     session = await createSession(session);
+    console.log(session);
 
     //smite api sessions can only last 15 min, so need to create a new one before then
     //this could make multiple setTimeouts, if called in succession, deleting a session
@@ -74,8 +75,8 @@ app.get("/testsession", async (req, resp) => {
       resp.json({ errorMessage: "There is no session" });
     } else {
       console.log(`testing ${session} session connection`);
-      const signature = createSignature("testsession");
       const timeStamp = DateTime.utc().toFormat("yyyyMMddhhmmss");
+      const signature = createSignature("testsession", timeStamp);
       const testSessionUrl = `${apiUrl}/testsessionjson/${devId}/${signature}/${session}/${timeStamp}`;
       const smiteResp = await fetch(testSessionUrl);
       const data = await smiteResp.json();
@@ -94,8 +95,8 @@ app.get("/getgods", async (req, resp) => {
       resp.json({ errorMessage: "You need to make a session first" });
     } else {
       console.log("getting heroes");
-      const signature = createSignature("getgods");
       const timeStamp = DateTime.utc().toFormat("yyyyMMddhhmmss");
+      const signature = createSignature("getgods", timeStamp);
       const getGodsUrl = `${apiUrl}/getgodsjson/${devId}/${signature}/${session}/${timeStamp}/1`;
       const smiteResp = await fetch(getGodsUrl);
       const data = await smiteResp.json();
@@ -103,5 +104,23 @@ app.get("/getgods", async (req, resp) => {
     }
   } catch (error) {
     console.log(error);
+  }
+});
+
+app.get("/patchnotes", async (req, resp) => {
+  try {
+    if (!session) {
+      console.log("make session");
+      resp.json({ errorMessage: "You need to make a session first" });
+    } else {
+      const timestamp = DateTime.utc().toFormat("yyyyMMddhhmmss");
+      const signature = createSignature("getpatchinfo", timestamp);
+      const patchNotesUrl = `${apiUrl}/getpatchinfojson/${devId}/${signature}/${session}/${timestamp}`;
+      const patchNoteResp = await fetch(patchNotesUrl);
+      const data = await patchNoteResp.json();
+      resp.json(data);
+    }
+  } catch (err) {
+    console.log(err);
   }
 });

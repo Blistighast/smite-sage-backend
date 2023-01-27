@@ -2,8 +2,8 @@ import { createHash } from "crypto";
 import { DateTime } from "luxon";
 import "dotenv/config";
 
-const createSignature = (method) => {
-  const timeStamp = DateTime.utc().toFormat("yyyyMMddhhmmss");
+const createSignature = (method, timeStamp) => {
+  // const timeStamp = DateTime.utc().toFormat("yyyyMMddhhmmss");
   const devId = process.env.devId;
   const authKey = process.env.authKey;
   const unhashed = `${devId}${method}${authKey}${timeStamp}`;
