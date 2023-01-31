@@ -14,6 +14,7 @@ const port = process.env.PORT || 4000;
 const apiUrl = process.env.apiUrl;
 const devId = process.env.devId;
 let session = null;
+let timeout;
 
 app.listen(port, () => console.log(`listening on port ${port}`));
 app.use(
@@ -39,8 +40,13 @@ app.get("/smiteapi", async (req, resp) => {
     console.log("I got a smite ping!");
 
     const smitePingUrl = `${apiUrl}/pingjson`;
+    const timeStampB4 = DateTime.utc().toFormat("yyyyMMddhhmmss");
     const smitePingCall = await fetch(smitePingUrl);
     const data = await smitePingCall.json();
+    const timeStampAf = DateTime.utc().toFormat("yyyyMMddhhmmss");
+    console.log("timeStampB4", timeStampB4);
+    console.log("timeStampAf", timeStampAf);
+    console.log(data);
     resp.json(data);
   } catch (error) {
     console.log(error);
@@ -60,7 +66,11 @@ app.get("/createsession", async (req, resp) => {
     // before it needs to be, which would make unnessary calls to the smite api
     // need to fix later
     console.log("setting the timeout");
-    setTimeout(() => (session = null), 1000 * 60 * 14); //reset the session after 14 min
+    if (timeout) {
+      //refresh 15 minute timer if another call is made before it is done
+      clearTimeout(timeout);
+    }
+    timeout = setTimeout(() => (session = null), 1000 * 60 * 14); //reset the session after 14 min
 
     resp.json(session);
   } catch (error) {
