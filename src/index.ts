@@ -38,14 +38,9 @@ app.get("/api", (req, resp) => {
 app.get("/smiteapi", async (req, resp) => {
   try {
     console.log("I got a smite ping!");
-
     const smitePingUrl = `${apiUrl}/pingjson`;
-    const timeStampB4 = DateTime.utc().toFormat("yyyyMMddhhmmss");
     const smitePingCall = await fetch(smitePingUrl);
     const data = await smitePingCall.json();
-    const timeStampAf = DateTime.utc().toFormat("yyyyMMddhhmmss");
-    console.log("timeStampB4", timeStampB4);
-    console.log("timeStampAf", timeStampAf);
     console.log(data);
     resp.json(data);
   } catch (error) {
