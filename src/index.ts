@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import fetch from "node-fetch";
 import { DateTime } from "luxon";
+import mongoose from "mongoose";
 import "dotenv/config";
 
 //custom functions
@@ -13,15 +14,18 @@ const port = process.env.PORT || 4000;
 
 const apiUrl = process.env.apiUrl;
 const devId = process.env.devId;
+const databaseUrl = process.env.dataBaseUrl;
 let session = null;
 let timeout;
 
 app.listen(port, () => console.log(`listening on port ${port}`));
 app.use(
   cors({
-    origin: "http://localhost:3000",
+    origin: [process.env.frontendUrl],
   })
 );
+
+mongoose.connect(databaseUrl);
 
 //server ping, returns timestamp
 app.get("/api", (req, resp) => {
