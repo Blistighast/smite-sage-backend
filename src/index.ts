@@ -8,6 +8,7 @@ import "dotenv/config";
 //custom functions
 import createSignature from "./utils/createSignature";
 import createSession from "./utils/createSession";
+import GodModel from "./schema/godSchema";
 
 const app = express();
 const port = process.env.PORT || 4000;
@@ -100,16 +101,28 @@ app.get("/testsession", async (req, resp) => {
 app.get("/getgods", async (req, resp) => {
   try {
     if (!session) {
-      console.log("you need to make a session first");
-      resp.json({ errorMessage: "You need to make a session first" });
+      console.log("no smite api session created, only grabbing from db");
+      const gods = await GodModel.find();
+      resp.json(gods);
     } else {
       console.log("getting heroes");
       const timeStamp = DateTime.utc().toFormat("yyyyMMddhhmmss");
       const signature = createSignature("getgods", timeStamp);
       const getGodsUrl = `${apiUrl}/getgodsjson/${devId}/${signature}/${session}/${timeStamp}/1`;
       const smiteResp = await fetch(getGodsUrl);
-      const data = await smiteResp.json();
-      resp.json(data);
+      const godsData = await smiteResp.json();
+      godsData.forEach((god) => {
+        GodModel.replaceOne(
+          { id: god.id },
+          god,
+          { upsert: true },
+          function (err) {
+            if (err) console.log(err);
+          }
+        );
+      });
+      const gods = await GodModel.find();
+      resp.json(gods);
     }
   } catch (error) {
     console.log(error);
