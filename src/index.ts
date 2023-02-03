@@ -98,6 +98,24 @@ app.get("/testsession", async (req, resp) => {
   }
 });
 
+app.get("/patchnotes", async (req, resp) => {
+  try {
+    if (!session) {
+      console.log("make session");
+      resp.json({ errorMessage: "You need to make a session first" });
+    } else {
+      const timestamp = DateTime.utc().toFormat("yyyyMMddhhmmss");
+      const signature = createSignature("getpatchinfo", timestamp);
+      const patchNotesUrl = `${apiUrl}/getpatchinfojson/${devId}/${signature}/${session}/${timestamp}`;
+      const patchNoteResp = await fetch(patchNotesUrl);
+      const data = await patchNoteResp.json();
+      resp.json(data);
+    }
+  } catch (err) {
+    console.log(err);
+  }
+});
+
 app.get("/getgods", async (req, resp) => {
   try {
     if (!session) {
@@ -129,20 +147,13 @@ app.get("/getgods", async (req, resp) => {
   }
 });
 
-app.get("/patchnotes", async (req, resp) => {
+app.get("/gods/:id", async (req, resp) => {
   try {
-    if (!session) {
-      console.log("make session");
-      resp.json({ errorMessage: "You need to make a session first" });
-    } else {
-      const timestamp = DateTime.utc().toFormat("yyyyMMddhhmmss");
-      const signature = createSignature("getpatchinfo", timestamp);
-      const patchNotesUrl = `${apiUrl}/getpatchinfojson/${devId}/${signature}/${session}/${timestamp}`;
-      const patchNoteResp = await fetch(patchNotesUrl);
-      const data = await patchNoteResp.json();
-      resp.json(data);
-    }
-  } catch (err) {
-    console.log(err);
+    const id = req.params.id;
+    const god = await GodModel.find({ id: id });
+    console.log(god);
+    resp.json(god);
+  } catch (error) {
+    console.error(error);
   }
 });
