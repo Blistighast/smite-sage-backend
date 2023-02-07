@@ -1,8 +1,8 @@
 {
   "name": "smite-sage-backend",
-  "version": "1.0.2",
+  "version": "1.0.0",
   "description": "backend server for the smite sage frontend",
-  "private": true,
+  "main": "index.js",
   "scripts": {
     "dev": "keystone dev",
     "start": "keystone start",
@@ -17,14 +17,14 @@
     "@keystone-6/auth": "^6.0.0",
     "@keystone-6/core": "^4.0.1",
     "@keystone-6/fields-document": "^6.0.0",
-    "typescript": "^4.8.0",
     "cors": "^2.8.5",
     "crypto-js": "^4.1.1",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
     "luxon": "^3.2.1",
     "mongoose": "^6.9.0",
-    "node-fetch": "^2.6.8"
+    "node-fetch": "^2.6.8",
+    "typescript": "^4.9.5"
   },
   "devDependencies": {
     "@types/node": "^18.11.18"

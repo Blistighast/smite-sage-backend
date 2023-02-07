@@ -151,7 +151,6 @@ app.get("/gods/:id", async (req, resp) => {
   try {
     const id = req.params.id;
     const god = await GodModel.find({ id: id });
-    console.log(god);
     resp.json(god);
   } catch (error) {
     console.error(error);
