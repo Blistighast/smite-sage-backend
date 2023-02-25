@@ -9,6 +9,7 @@ import "dotenv/config";
 import createSignature from "./utils/createSignature";
 import createSession from "./utils/createSession";
 import GodModel from "./schema/godSchema";
+import ItemModel from "./schema/itemSchema";
 
 const app = express();
 const port = process.env.PORT || 4000;
@@ -123,7 +124,7 @@ app.get("/getgods", async (req, resp) => {
       const gods = await GodModel.find();
       resp.json(gods);
     } else {
-      console.log("getting heroes");
+      console.log("getting gods");
       const timeStamp = DateTime.utc().toFormat("yyyyMMddhhmmss");
       const signature = createSignature("getgods", timeStamp);
       const getGodsUrl = `${apiUrl}/getgodsjson/${devId}/${signature}/${session}/${timeStamp}/1`;
@@ -135,7 +136,7 @@ app.get("/getgods", async (req, resp) => {
           god,
           { upsert: true },
           function (err) {
-            if (err) console.log(err);
+            if (err) console.error(err);
           }
         );
       });
@@ -152,6 +153,38 @@ app.get("/gods/:id", async (req, resp) => {
     const id = req.params.id;
     const god = await GodModel.find({ id: id });
     resp.json(god);
+  } catch (error) {
+    console.error(error);
+  }
+});
+
+app.get("/getitems", async (req, resp) => {
+  try {
+    if (!session) {
+      console.log("no smite api session, only grabbing from db");
+      const items = await ItemModel.find();
+      resp.json(items);
+    } else {
+      console.log("getting items");
+      const timeStamp = DateTime.utc().toFormat("yyyyMMddhhmmss");
+      const signature = createSignature("getitems", timeStamp);
+      const getItemsUrl = `${apiUrl}/getitemsjson/${devId}/${signature}/${session}/${timeStamp}/1`;
+      const smiteResp = await fetch(getItemsUrl);
+      const itemsData = await smiteResp.json();
+      itemsData.forEach((item) => {
+        ItemModel.replaceOne(
+          { ItemId: item.ItemId },
+          item,
+          { upsert: true },
+          function (err) {
+            if (err) console.error(err);
+          }
+        );
+      });
+      const items = await ItemModel.find();
+      console.log(items);
+      resp.json(items);
+    }
   } catch (error) {
     console.error(error);
   }
