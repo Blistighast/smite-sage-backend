@@ -182,10 +182,19 @@ app.get("/getitems", async (req, resp) => {
         );
       });
       const items = await ItemModel.find();
-      console.log(items);
       resp.json(items);
     }
   } catch (error) {
     console.error(error);
+  }
+});
+
+app.get("/items/:id", async (req, resp) => {
+  try {
+    const id = req.params.id;
+    const item = await ItemModel.find({ ItemId: id });
+    resp.json(item);
+  } catch (err) {
+    console.error(err);
   }
 });
