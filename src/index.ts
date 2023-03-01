@@ -172,14 +172,20 @@ app.get("/getitems", async (req, resp) => {
       const smiteResp = await fetch(getItemsUrl);
       const itemsData = await smiteResp.json();
       itemsData.forEach((item) => {
-        ItemModel.replaceOne(
-          { ItemId: item.ItemId },
-          item,
-          { upsert: true },
-          function (err) {
+        if (item.ActiveFlag === "y") {
+          ItemModel.replaceOne(
+            { ItemId: item.ItemId },
+            item,
+            { upsert: true },
+            function (err) {
+              if (err) console.error(err);
+            }
+          );
+        } else if (item.ActiveFlag === "n") {
+          ItemModel.deleteOne({ ItemId: item.ItemId }, function (err) {
             if (err) console.error(err);
-          }
-        );
+          });
+        }
       });
       const items = await ItemModel.find();
       resp.json(items);
@@ -193,6 +199,7 @@ app.get("/items/:id", async (req, resp) => {
   try {
     const id = req.params.id;
     const item = await ItemModel.find({ ItemId: id });
+    console.log(item);
     resp.json(item);
   } catch (err) {
     console.error(err);
