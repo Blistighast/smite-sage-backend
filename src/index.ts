@@ -120,7 +120,9 @@ app.get("/patchnotes", async (req, resp) => {
 app.get("/getgods", async (req, resp) => {
   try {
     if (!session) {
-      console.log("no smite api session created, only grabbing from db");
+      console.log(
+        "no smite api session created, only grabbing gods list from db"
+      );
       const gods = await GodModel.find();
       resp.json(gods);
     } else {
@@ -148,15 +150,58 @@ app.get("/getgods", async (req, resp) => {
   }
 });
 
+// app.get("/gods/:id", async (req, resp) => {
+//   try {
+//     const id = req.params.id;
+//     const god = await GodModel.find({ id: id });
+//     resp.json(god);
+//   } catch (error) {
+//     console.error(error);
+//   }
+// });
+
 app.get("/gods/:id", async (req, resp) => {
   try {
-    const id = req.params.id;
-    const god = await GodModel.find({ id: id });
-    resp.json(god);
+    const godId = req.params.id;
+    if (!session) {
+      console.log("no smite api session created, only grabbing god from db");
+      const god = await GodModel.find({ id: godId });
+      resp.json([god, ["skin test"]]);
+    } else {
+      console.log("fetching skins from api");
+      const timeStamp = DateTime.utc().toFormat("yyyyMMddhhmmss");
+      const signature = createSignature("getgodskins", timeStamp);
+      const getGodSkinsUrl = `${apiUrl}/getgodskinsjson/${devId}/${signature}/${session}/${timeStamp}/${godId}/1`;
+      const smiteResp = await fetch(getGodSkinsUrl);
+      const skinsData = await smiteResp.json();
+      console.log(skinsData[0]);
+      const god = await GodModel.find({ id: godId });
+      resp.json([god, skinsData]);
+    }
   } catch (error) {
     console.error(error);
   }
 });
+
+// app.get("/gods/:id", async (req, resp) => {
+//   try {
+//     if (!session) {
+//       console.log("no smite api session created, only grabbing from db");
+//     } else {
+//       console.log("fetching skins from api");
+//       const godId = req.params.id;
+//       const timeStamp = DateTime.utc().toFormat("yyyyMMddhhmmss");
+//       const signature = createSignature("getgodskins", timeStamp);
+//       const getGodSkinsUrl = `${apiUrl}/getgodskinsjson/${devId}/${signature}/${session}/${timeStamp}/${godId}/1`;
+//       const smiteResp = await fetch(getGodSkinsUrl);
+//       const skinsData = await smiteResp.json();
+//       console.log(skinsData);
+//       resp.json(skinsData);
+//     }
+//   } catch (error) {
+//     console.error(error);
+//   }
+// });
 
 app.get("/getitems", async (req, resp) => {
   try {

@@ -101,8 +101,8 @@ var lists = {
 };
 
 // keystone.ts
-var databaseUrl = process.env.dataBaseUrl;
-var frontendUrl = process.env.frontendUrl;
+var databaseUrl = process.env.dataBaseUrl || "mongodb://localhost/keystone-smite-sage";
+var frontendUrl = process.env.frontendUrl || "http://localhost:3000";
 var sessionConfig = {
   maxAge: 60 * 60 * 24 * 360,
   secret: process.env.cookie_secret
