@@ -167,7 +167,7 @@ app.get("/gods/:id", async (req, resp) => {
     if (!session) {
       console.log("no smite api session created, only grabbing god from db");
       const god = await GodModel.find({ id: godId });
-      resp.json([god, ["skin test"]]);
+      resp.json(god);
     } else {
       console.log("fetching skins from api");
       const timeStamp = DateTime.utc().toFormat("yyyyMMddhhmmss");
@@ -186,7 +186,7 @@ app.get("/gods/:id", async (req, resp) => {
         }
       );
       console.log(god);
-      resp.json([god, skinsData]);
+      resp.json(god);
     }
   } catch (error) {
     console.error(error);
