@@ -28,6 +28,7 @@ app.use(
 );
 
 mongoose.connect(databaseUrl);
+// mongoose.set('strictQuery', false);
 
 //server ping, returns timestamp
 app.get("/api", (req, resp) => {
@@ -133,7 +134,7 @@ app.get("/getgods", async (req, resp) => {
       const smiteResp = await fetch(getGodsUrl);
       const godsData = await smiteResp.json();
       godsData.forEach((god) => {
-        GodModel.replaceOne(
+        GodModel.updateOne(
           { id: god.id },
           god,
           { upsert: true },
@@ -174,8 +175,17 @@ app.get("/gods/:id", async (req, resp) => {
       const getGodSkinsUrl = `${apiUrl}/getgodskinsjson/${devId}/${signature}/${session}/${timeStamp}/${godId}/1`;
       const smiteResp = await fetch(getGodSkinsUrl);
       const skinsData = await smiteResp.json();
-      console.log(skinsData[0]);
-      const god = await GodModel.find({ id: godId });
+      console.log(skinsData);
+      // const god = await GodModel.find({ id: godId }); old
+      const god = await GodModel.updateOne(
+        { id: godId },
+        { skins: skinsData },
+        { upsert: true },
+        function (err) {
+          if (err) console.error(err);
+        }
+      );
+      console.log(god);
       resp.json([god, skinsData]);
     }
   } catch (error) {

@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
 //schema
-const skinSchema = new mongoose.Schema({
+export const skinSchema = new mongoose.Schema({
   god_id: Number,
   skin_id1: Number,
   skin_id2: Number,
