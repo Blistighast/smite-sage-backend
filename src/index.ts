@@ -27,8 +27,8 @@ app.use(
   })
 );
 
+mongoose.set("strictQuery", true);
 mongoose.connect(databaseUrl);
-// mongoose.set('strictQuery', false);
 
 //server ping, returns timestamp
 app.get("/api", (req, resp) => {
@@ -56,6 +56,7 @@ app.get("/smiteapi", async (req, resp) => {
 });
 
 //create a session to be able to get more info from smite api
+// creating a session only works after 9pm est for some reason, not sure how to fix yet, says timestamp issue before then even though they match
 app.get("/createsession", async (req, resp) => {
   try {
     console.log("creating Session", session);
@@ -118,6 +119,19 @@ app.get("/patchnotes", async (req, resp) => {
   }
 });
 
+app.get("/getuseddata", async (req, resp) => {
+  try {
+    const timestamp = DateTime.utc().toFormat("yyyyMMddhhmmss");
+    const signature = createSignature("getdataused", timestamp);
+    const dataUsedUrl = `${apiUrl}/getdatausedjson/${devId}/${signature}/${session}/${timestamp}`;
+    const dataUsedResp = await fetch(dataUsedUrl);
+    const data = await dataUsedResp.json();
+    resp.json(data);
+  } catch (err) {
+    console.error(err);
+  }
+});
+
 app.get("/getgods", async (req, resp) => {
   try {
     if (!session) {
@@ -151,16 +165,6 @@ app.get("/getgods", async (req, resp) => {
   }
 });
 
-// app.get("/gods/:id", async (req, resp) => {
-//   try {
-//     const id = req.params.id;
-//     const god = await GodModel.find({ id: id });
-//     resp.json(god);
-//   } catch (error) {
-//     console.error(error);
-//   }
-// });
-
 app.get("/gods/:id", async (req, resp) => {
   try {
     const godId = req.params.id;
@@ -175,9 +179,7 @@ app.get("/gods/:id", async (req, resp) => {
       const getGodSkinsUrl = `${apiUrl}/getgodskinsjson/${devId}/${signature}/${session}/${timeStamp}/${godId}/1`;
       const smiteResp = await fetch(getGodSkinsUrl);
       const skinsData = await smiteResp.json();
-      console.log(skinsData);
-      // const god = await GodModel.find({ id: godId }); old
-      const god = await GodModel.updateOne(
+      GodModel.updateOne(
         { id: godId },
         { skins: skinsData },
         { upsert: true },
@@ -185,33 +187,13 @@ app.get("/gods/:id", async (req, resp) => {
           if (err) console.error(err);
         }
       );
-      console.log(god);
+      const god = await GodModel.find({ id: godId });
       resp.json(god);
     }
   } catch (error) {
     console.error(error);
   }
 });
-
-// app.get("/gods/:id", async (req, resp) => {
-//   try {
-//     if (!session) {
-//       console.log("no smite api session created, only grabbing from db");
-//     } else {
-//       console.log("fetching skins from api");
-//       const godId = req.params.id;
-//       const timeStamp = DateTime.utc().toFormat("yyyyMMddhhmmss");
-//       const signature = createSignature("getgodskins", timeStamp);
-//       const getGodSkinsUrl = `${apiUrl}/getgodskinsjson/${devId}/${signature}/${session}/${timeStamp}/${godId}/1`;
-//       const smiteResp = await fetch(getGodSkinsUrl);
-//       const skinsData = await smiteResp.json();
-//       console.log(skinsData);
-//       resp.json(skinsData);
-//     }
-//   } catch (error) {
-//     console.error(error);
-//   }
-// });
 
 app.get("/getitems", async (req, resp) => {
   try {
@@ -260,3 +242,12 @@ app.get("/items/:id", async (req, resp) => {
     console.error(err);
   }
 });
+
+// creating a session only works after 9pm est for some reason, severly limits ability to get a player, not worth saving any users in database
+// app.get("/getplayer", async (req, resp) => {
+//   try {
+
+//   } catch (err) {
+//     console.error(err);
+//   }
+// });
