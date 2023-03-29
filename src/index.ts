@@ -10,6 +10,7 @@ import createSignature from "./utils/createSignature";
 import createSession from "./utils/createSession";
 import GodModel from "./schema/godSchema";
 import ItemModel from "./schema/itemSchema";
+import PlayerModel from "./schema/playerSchema";
 
 const app = express();
 const port = process.env.PORT || 4000;
@@ -244,10 +245,32 @@ app.get("/items/:id", async (req, resp) => {
 });
 
 // creating a session only works after 9pm est for some reason, severly limits ability to get a player, not worth saving any users in database
-// app.get("/getplayer", async (req, resp) => {
-//   try {
-
-//   } catch (err) {
-//     console.error(err);
-//   }
-// });
+app.get("/getplayer/:playername", async (req, resp) => {
+  try {
+    const playerName = req.params.playername;
+    if (!session) {
+      console.log("you must create a session");
+      // need to fix find
+      const player = await PlayerModel.find({ Name: playerName });
+      resp.json(player);
+      // resp.json({ errorMessage: "You need to make a session first" });
+    } else {
+      const timeStamp = DateTime.utc().toFormat("yyyyMMddhhmmss");
+      const signature = createSignature("getplayer", timeStamp);
+      const getPlayerUrl = `${apiUrl}/getplayerjson/${devId}/${signature}/${session}/${timeStamp}/${playerName}`;
+      const playerResp = await fetch(getPlayerUrl);
+      const playerData = await playerResp.json();
+      PlayerModel.updateOne(
+        { Id: playerData[0].Id },
+        playerData[0],
+        { upsert: true },
+        function (err) {
+          if (err) console.error(err);
+        }
+      );
+      resp.json(playerData);
+    }
+  } catch (err) {
+    console.error(err);
+  }
+});
