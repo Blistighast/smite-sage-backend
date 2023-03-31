@@ -35,7 +35,7 @@ mongoose.connect(databaseUrl);
 app.get("/api", (req, resp) => {
   try {
     console.log("I got a server ping!");
-    const timeStamp = DateTime.utc().toFormat("yyyyMMddhhmmss");
+    const timeStamp = DateTime.utc().toFormat("yyyyMMddHHmmss");
     resp.json({ message: "backend up and running", timeStamp });
   } catch (error) {
     console.log(error);
@@ -61,7 +61,6 @@ app.get("/smiteapi", async (req, resp) => {
 app.get("/createsession", async (req, resp) => {
   try {
     console.log("creating Session", session);
-
     session = await createSession(session);
     console.log(session);
 
@@ -89,7 +88,7 @@ app.get("/testsession", async (req, resp) => {
       resp.json({ errorMessage: "There is no session" });
     } else {
       console.log(`testing ${session} session connection`);
-      const timeStamp = DateTime.utc().toFormat("yyyyMMddhhmmss");
+      const timeStamp = DateTime.utc().toFormat("yyyyMMddHHmmss");
       const signature = createSignature("testsession", timeStamp);
       const testSessionUrl = `${apiUrl}/testsessionjson/${devId}/${signature}/${session}/${timeStamp}`;
       const smiteResp = await fetch(testSessionUrl);
@@ -108,7 +107,7 @@ app.get("/patchnotes", async (req, resp) => {
       console.log("make session");
       resp.json({ errorMessage: "You need to make a session first" });
     } else {
-      const timestamp = DateTime.utc().toFormat("yyyyMMddhhmmss");
+      const timestamp = DateTime.utc().toFormat("yyyyMMddHHmmss");
       const signature = createSignature("getpatchinfo", timestamp);
       const patchNotesUrl = `${apiUrl}/getpatchinfojson/${devId}/${signature}/${session}/${timestamp}`;
       const patchNoteResp = await fetch(patchNotesUrl);
@@ -122,7 +121,7 @@ app.get("/patchnotes", async (req, resp) => {
 
 app.get("/getuseddata", async (req, resp) => {
   try {
-    const timestamp = DateTime.utc().toFormat("yyyyMMddhhmmss");
+    const timestamp = DateTime.utc().toFormat("yyyyMMddHHmmss");
     const signature = createSignature("getdataused", timestamp);
     const dataUsedUrl = `${apiUrl}/getdatausedjson/${devId}/${signature}/${session}/${timestamp}`;
     const dataUsedResp = await fetch(dataUsedUrl);
@@ -143,15 +142,27 @@ app.get("/getgods", async (req, resp) => {
       resp.json(gods);
     } else {
       console.log("getting gods");
-      const timeStamp = DateTime.utc().toFormat("yyyyMMddhhmmss");
+      const timeStamp = DateTime.utc().toFormat("yyyyMMddHHmmss");
       const signature = createSignature("getgods", timeStamp);
       const getGodsUrl = `${apiUrl}/getgodsjson/${devId}/${signature}/${session}/${timeStamp}/1`;
       const smiteResp = await fetch(getGodsUrl);
       const godsData = await smiteResp.json();
-      godsData.forEach((god) => {
+      godsData.forEach(async (god) => {
         GodModel.updateOne(
           { id: god.id },
           god,
+          { upsert: true },
+          function (err) {
+            if (err) console.error(err);
+          }
+        );
+        const signature = createSignature("getgodskins", timeStamp);
+        const getGodSkinsUrl = `${apiUrl}/getgodskinsjson/${devId}/${signature}/${session}/${timeStamp}/${god.id}/1`;
+        const smiteResp = await fetch(getGodSkinsUrl);
+        const skinsData = await smiteResp.json();
+        GodModel.updateOne(
+          { id: god.id },
+          { skins: skinsData },
           { upsert: true },
           function (err) {
             if (err) console.error(err);
@@ -175,7 +186,7 @@ app.get("/gods/:id", async (req, resp) => {
       resp.json(god);
     } else {
       console.log("fetching skins from api");
-      const timeStamp = DateTime.utc().toFormat("yyyyMMddhhmmss");
+      const timeStamp = DateTime.utc().toFormat("yyyyMMddHHmmss");
       const signature = createSignature("getgodskins", timeStamp);
       const getGodSkinsUrl = `${apiUrl}/getgodskinsjson/${devId}/${signature}/${session}/${timeStamp}/${godId}/1`;
       const smiteResp = await fetch(getGodSkinsUrl);
@@ -204,7 +215,7 @@ app.get("/getitems", async (req, resp) => {
       resp.json(items);
     } else {
       console.log("getting items");
-      const timeStamp = DateTime.utc().toFormat("yyyyMMddhhmmss");
+      const timeStamp = DateTime.utc().toFormat("yyyyMMddHHmmss");
       const signature = createSignature("getitems", timeStamp);
       const getItemsUrl = `${apiUrl}/getitemsjson/${devId}/${signature}/${session}/${timeStamp}/1`;
       const smiteResp = await fetch(getItemsUrl);
@@ -255,7 +266,7 @@ app.get("/getplayer/:playername", async (req, resp) => {
       resp.json(player);
       // resp.json({ errorMessage: "You need to make a session first" });
     } else {
-      const timeStamp = DateTime.utc().toFormat("yyyyMMddhhmmss");
+      const timeStamp = DateTime.utc().toFormat("yyyyMMddHHmmss");
       const signature = createSignature("getplayer", timeStamp);
       const getPlayerUrl = `${apiUrl}/getplayerjson/${devId}/${signature}/${session}/${timeStamp}/${playerName}`;
       const playerResp = await fetch(getPlayerUrl);

@@ -7,9 +7,8 @@ const apiUrl = process.env.apiUrl;
 const createSession = async (session) => {
   if (!session) {
     const devId = process.env.devId;
-    const timeStamp = DateTime.utc().toFormat("yyyyMMddhhmmss");
+    const timeStamp = DateTime.utc().toFormat("yyyyMMddHHmmss");
     const signature = createSignature("createsession", timeStamp);
-    console.log("timeStamp", timeStamp);
     const createSessionUrl = `${apiUrl}/createsessionjson/${devId}/${signature}/${timeStamp}`;
     const smiteSessionCreateResp = await fetch(createSessionUrl);
     const sessionData = await smiteSessionCreateResp.json();
