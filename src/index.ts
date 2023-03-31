@@ -262,23 +262,14 @@ app.get("/getplayer/:playername", async (req, resp) => {
     if (!session) {
       console.log("you must create a session");
       // need to fix find
-      const player = await PlayerModel.find({ Name: playerName });
-      resp.json(player);
-      // resp.json({ errorMessage: "You need to make a session first" });
+      // const player = await PlayerModel.find({ Name: playerName });
+      resp.json({ errorMessage: "You need to make a session first" });
     } else {
       const timeStamp = DateTime.utc().toFormat("yyyyMMddHHmmss");
       const signature = createSignature("getplayer", timeStamp);
       const getPlayerUrl = `${apiUrl}/getplayerjson/${devId}/${signature}/${session}/${timeStamp}/${playerName}`;
       const playerResp = await fetch(getPlayerUrl);
       const playerData = await playerResp.json();
-      PlayerModel.updateOne(
-        { Id: playerData[0].Id },
-        playerData[0],
-        { upsert: true },
-        function (err) {
-          if (err) console.error(err);
-        }
-      );
       resp.json(playerData);
     }
   } catch (err) {
