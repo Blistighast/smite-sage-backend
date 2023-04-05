@@ -19,6 +19,7 @@ const devId = process.env.devId;
 const databaseUrl = process.env.dataBaseUrl;
 let session = null;
 let timeout;
+let patchNumber = null;
 
 app.listen(port, () => console.log(`listening on port ${port}`));
 app.use(
@@ -31,8 +32,28 @@ app.use(
 mongoose.set("strictQuery", true);
 mongoose.connect(databaseUrl);
 
-//set interval every 24 hours create session and check if smite version number changed and updated gods & items if so
-// setInterval(() => {}, 1000 * 60 * 60 * 24)
+//check if version has changed once every 24 hours, if yes update database
+// setInterval(async () => {
+//   console.log("checking for version number change");
+//   session = await createSession(session);
+//   if (timeout) {
+//     //refresh 15 minute timer if another call is made before it is done
+//     clearTimeout(timeout);
+//   }
+//   console.log("setting timeout");
+//   timeout = setTimeout(() => (session = null), 1000 * 60 * 14);
+//   const timestamp = DateTime.utc().toFormat("yyyyMMddHHmmss");
+//   const signature = createSignature("getpatchinfo", timestamp);
+//   const patchNotesUrl = `${apiUrl}/getpatchinfojson/${devId}/${signature}/${session}/${timestamp}`;
+//   const patchNoteResp = await fetch(patchNotesUrl);
+//   const patchData = await patchNoteResp.json();
+//   console.log(patchData.version_string);
+//   //
+//   if (patchData.version_string !== patchNumber) {
+
+//   }
+//   patchNumber = patchData.version_string
+// }, 1000 * 60 * 60 * 24);
 
 //server ping, returns timestamp
 app.get("/api", (req, resp) => {
