@@ -10,7 +10,6 @@ import createSignature from "./utils/createSignature";
 import createSession from "./utils/createSession";
 import GodModel from "./schema/godSchema";
 import ItemModel from "./schema/itemSchema";
-import PlayerModel from "./schema/playerSchema";
 
 const app = express();
 const port = process.env.PORT || 4000;
@@ -28,8 +27,12 @@ app.use(
   })
 );
 
+// to stop mongoose warning of future mongoos update
 mongoose.set("strictQuery", true);
 mongoose.connect(databaseUrl);
+
+//set interval every 24 hours create session and check if smite version number changed and updated gods & items if so
+// setInterval(() => {}, 1000 * 60 * 60 * 24)
 
 //server ping, returns timestamp
 app.get("/api", (req, resp) => {
@@ -187,10 +190,18 @@ app.get("/gods/:id", async (req, resp) => {
     } else {
       console.log("fetching skins from api");
       const timeStamp = DateTime.utc().toFormat("yyyyMMddHHmmss");
-      const signature = createSignature("getgodskins", timeStamp);
-      const getGodSkinsUrl = `${apiUrl}/getgodskinsjson/${devId}/${signature}/${session}/${timeStamp}/${godId}/1`;
-      const smiteResp = await fetch(getGodSkinsUrl);
-      const skinsData = await smiteResp.json();
+      const skinSignature = createSignature("getgodskins", timeStamp);
+      const getGodSkinsUrl = `${apiUrl}/getgodskinsjson/${devId}/${skinSignature}/${session}/${timeStamp}/${godId}/1`;
+      const skinsResp = await fetch(getGodSkinsUrl);
+      const skinsData = await skinsResp.json();
+      const recommendedItemsSignature = createSignature(
+        "getgodrecommendeditems",
+        timeStamp
+      );
+      const getrecommendedItemsUrl = `${apiUrl}/getgodrecommendeditemsjson/${devId}/${recommendedItemsSignature}/${session}/${timeStamp}/${godId}/1`;
+      const recommendedItemsResp = await fetch(getrecommendedItemsUrl);
+      const recommendedItemsData = await recommendedItemsResp.json();
+      console.log(recommendedItemsData);
       GodModel.updateOne(
         { id: godId },
         { skins: skinsData },
