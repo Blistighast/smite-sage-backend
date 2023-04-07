@@ -32,28 +32,32 @@ app.use(
 mongoose.set("strictQuery", true);
 mongoose.connect(databaseUrl);
 
-//check if version has changed once every 24 hours, if yes update database
-// setInterval(async () => {
-//   console.log("checking for version number change");
-//   session = await createSession(session);
-//   if (timeout) {
-//     //refresh 15 minute timer if another call is made before it is done
-//     clearTimeout(timeout);
-//   }
-//   console.log("setting timeout");
-//   timeout = setTimeout(() => (session = null), 1000 * 60 * 14);
-//   const timestamp = DateTime.utc().toFormat("yyyyMMddHHmmss");
-//   const signature = createSignature("getpatchinfo", timestamp);
-//   const patchNotesUrl = `${apiUrl}/getpatchinfojson/${devId}/${signature}/${session}/${timestamp}`;
-//   const patchNoteResp = await fetch(patchNotesUrl);
-//   const patchData = await patchNoteResp.json();
-//   console.log(patchData.version_string);
-//   //
-//   if (patchData.version_string !== patchNumber) {
-
-//   }
-//   patchNumber = patchData.version_string
-// }, 1000 * 60 * 60 * 24);
+//check if version has changed once every 24 hours, if yes update gods & items
+setInterval(async () => {
+  console.log("checking for version number change");
+  session = await createSession(session);
+  if (timeout) {
+    //refresh 15 minute timer if another call is made before it is done
+    clearTimeout(timeout);
+  }
+  console.log("setting timeout");
+  timeout = setTimeout(() => (session = null), 1000 * 60 * 14);
+  const timestamp = DateTime.utc().toFormat("yyyyMMddHHmmss");
+  const signature = createSignature("getpatchinfo", timestamp);
+  const patchNotesUrl = `${apiUrl}/getpatchinfojson/${devId}/${signature}/${session}/${timestamp}`;
+  const patchNoteResp = await fetch(patchNotesUrl);
+  const patchData = await patchNoteResp.json();
+  console.log(
+    "current patch-",
+    patchNumber,
+    "updated patch-",
+    patchData.version_string
+  );
+  if (patchData.version_string !== patchNumber) {
+    console.log("something changed");
+  }
+  patchNumber = patchData.version_string;
+}, 1000 * 60 * 60 * 24);
 
 //server ping, returns timestamp
 app.get("/api", (req, resp) => {
@@ -86,7 +90,6 @@ app.get("/createsession", async (req, resp) => {
   try {
     console.log("creating Session", session);
     session = await createSession(session);
-    console.log(session);
 
     //smite api sessions can only last 15 min, so need to create a new one before then
     //this could make multiple setTimeouts, if called in succession, deleting a session
@@ -287,7 +290,6 @@ app.get("/items/:id", async (req, resp) => {
   }
 });
 
-// creating a session only works after 9pm est for some reason, severly limits ability to get a player, not worth saving any users in database
 app.get("/getplayer/:playername", async (req, resp) => {
   try {
     const playerName = req.params.playername;
