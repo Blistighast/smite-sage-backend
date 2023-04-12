@@ -1,7 +1,8 @@
+import fetch from "node-fetch";
 import { DateTime } from "luxon";
 import "dotenv/config";
 
-import createSignature from "src/utils/createSignature";
+import createSignature from "../utils/createSignature";
 import ItemModel from "./../schema/itemSchema";
 
 const apiUrl = process.env.apiUrl;

@@ -10,6 +10,10 @@ import createSignature from "./utils/createSignature";
 import createSession from "./utils/createSession";
 import GodModel from "./schema/godSchema";
 import ItemModel from "./schema/itemSchema";
+import smiteApiPing from "./api/apiPing";
+import serverPing from "./api/serverPing";
+import sessionTest from "./api/sessionTest";
+import patchnoteFetch from "./api/patchnotesFetch";
 
 const app = express();
 const port = process.env.PORT || 4000;
@@ -84,9 +88,7 @@ setInterval(async () => {
 //server ping, returns timestamp
 app.get("/api", (req, resp) => {
   try {
-    console.log("I got a server ping!");
-    const timeStamp = DateTime.utc().toFormat("yyyyMMddHHmmss");
-    resp.json({ message: "backend up and running", timeStamp });
+    resp.json(serverPing());
   } catch (error) {
     console.log(error);
   }
@@ -95,10 +97,7 @@ app.get("/api", (req, resp) => {
 //ping the smite api
 app.get("/smiteapi", async (req, resp) => {
   try {
-    console.log("I got a smite ping!");
-    const smitePingUrl = `${apiUrl}/pingjson`;
-    const smitePingCall = await fetch(smitePingUrl);
-    const data = await smitePingCall.json();
+    const data = await smiteApiPing();
     console.log(data);
     resp.json(data);
   } catch (error) {
@@ -107,7 +106,6 @@ app.get("/smiteapi", async (req, resp) => {
 });
 
 //create a session to be able to get more info from smite api
-// creating a session only works after 9pm est for some reason, not sure how to fix yet, says timestamp issue before then even though they match
 app.get("/createsession", async (req, resp) => {
   try {
     console.log("creating Session", session);
@@ -123,7 +121,6 @@ app.get("/createsession", async (req, resp) => {
       clearTimeout(timeout);
     }
     timeout = setTimeout(() => (session = null), 1000 * 60 * 14); //reset the session after 14 min
-
     resp.json(session);
   } catch (error) {
     console.log(error);
@@ -136,12 +133,7 @@ app.get("/testsession", async (req, resp) => {
       console.log("there is no session");
       resp.json({ errorMessage: "There is no session" });
     } else {
-      console.log(`testing ${session} session connection`);
-      const timeStamp = DateTime.utc().toFormat("yyyyMMddHHmmss");
-      const signature = createSignature("testsession", timeStamp);
-      const testSessionUrl = `${apiUrl}/testsessionjson/${devId}/${signature}/${session}/${timeStamp}`;
-      const smiteResp = await fetch(testSessionUrl);
-      const data = await smiteResp.json();
+      const data = await sessionTest(session);
       console.log(data);
       resp.json(data);
     }
@@ -156,11 +148,7 @@ app.get("/patchnotes", async (req, resp) => {
       console.log("make session");
       resp.json({ errorMessage: "You need to make a session first" });
     } else {
-      const timestamp = DateTime.utc().toFormat("yyyyMMddHHmmss");
-      const signature = createSignature("getpatchinfo", timestamp);
-      const patchNotesUrl = `${apiUrl}/getpatchinfojson/${devId}/${signature}/${session}/${timestamp}`;
-      const patchNoteResp = await fetch(patchNotesUrl);
-      const data = await patchNoteResp.json();
+      const data = await patchnoteFetch(session);
       resp.json(data);
     }
   } catch (err) {
