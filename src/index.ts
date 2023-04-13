@@ -110,7 +110,7 @@ app.get("/smiteapi", async (req, resp) => {
 app.get("/createsession", async (req, resp) => {
   try {
     console.log("creating Session", global.session);
-    await createSession(session);
+    // await createSession();
 
     //smite api sessions can only last 15 min, so need to create a new one before then
     //this could make multiple setTimeouts, if called in succession, deleting a session
@@ -159,7 +159,7 @@ app.get("/getuseddata", async (req, resp) => {
     // const dataUsedUrl = `${apiUrl}/getdatausedjson/${devId}/${signature}/${session}/${timestamp}`;
     // const dataUsedResp = await fetch(dataUsedUrl);
     // const data = await dataUsedResp.json();
-    const data = await apiUsed(session);
+    const data = await apiUsed();
     resp.json(data);
   } catch (err) {
     console.error(err);

@@ -8,8 +8,8 @@ import createSession from "../utils/createSession";
 const apiUrl = process.env.apiUrl;
 const devId = process.env.devId;
 
-const apiUsed = async (session) => {
-  await createSession(session);
+const apiUsed = async () => {
+  await createSession();
   const timestamp = DateTime.utc().toFormat("yyyyMMddHHmmss");
   const signature = createSignature("getdataused", timestamp);
   const dataUsedUrl = `${apiUrl}/getdatausedjson/${devId}/${signature}/${global.session}/${timestamp}`;
