@@ -14,6 +14,7 @@ import smiteApiPing from "./api/apiPing";
 import serverPing from "./api/serverPing";
 import sessionTest from "./api/sessionTest";
 import patchnoteFetch from "./api/patchnotesFetch";
+import apiUsed from "./api/apiUsed";
 
 const app = express();
 const port = process.env.PORT || 4000;
@@ -22,6 +23,7 @@ const apiUrl = process.env.apiUrl;
 const devId = process.env.devId;
 const databaseUrl = process.env.dataBaseUrl;
 let session = null;
+global.smiteSession = null;
 let timeout;
 let patchNumber = null;
 
@@ -108,20 +110,21 @@ app.get("/smiteapi", async (req, resp) => {
 //create a session to be able to get more info from smite api
 app.get("/createsession", async (req, resp) => {
   try {
-    console.log("creating Session", session);
-    session = await createSession(session);
+    console.log("creating Session", global.smiteSession);
+    global.smiteSession = await createSession(global.smiteSession);
 
     //smite api sessions can only last 15 min, so need to create a new one before then
     //this could make multiple setTimeouts, if called in succession, deleting a session
     // before it needs to be, which would make unnessary calls to the smite api
     // need to fix later
-    console.log("setting the timeout");
-    if (timeout) {
-      //refresh 15 minute timer if another call is made before it is done
-      clearTimeout(timeout);
-    }
-    timeout = setTimeout(() => (session = null), 1000 * 60 * 14); //reset the session after 14 min
-    resp.json(session);
+    // console.log("setting the timeout");
+    // if (timeout) {
+    //   //refresh 15 minute timer if another call is made before it is done
+    //   clearTimeout(timeout);
+    // }
+    // timeout = setTimeout(() => (session = null), 1000 * 60 * 14); //reset the session after 14 min
+    console.log("index session", global.smiteSession);
+    resp.json(global.smiteSession);
   } catch (error) {
     console.log(error);
   }
@@ -144,13 +147,8 @@ app.get("/testsession", async (req, resp) => {
 
 app.get("/patchnotes", async (req, resp) => {
   try {
-    if (!session) {
-      console.log("make session");
-      resp.json({ errorMessage: "You need to make a session first" });
-    } else {
-      const data = await patchnoteFetch(session);
-      resp.json(data);
-    }
+    const data = await patchnoteFetch(session);
+    resp.json(data);
   } catch (err) {
     console.log(err);
   }
@@ -158,11 +156,12 @@ app.get("/patchnotes", async (req, resp) => {
 
 app.get("/getuseddata", async (req, resp) => {
   try {
-    const timestamp = DateTime.utc().toFormat("yyyyMMddHHmmss");
-    const signature = createSignature("getdataused", timestamp);
-    const dataUsedUrl = `${apiUrl}/getdatausedjson/${devId}/${signature}/${session}/${timestamp}`;
-    const dataUsedResp = await fetch(dataUsedUrl);
-    const data = await dataUsedResp.json();
+    // const timestamp = DateTime.utc().toFormat("yyyyMMddHHmmss");
+    // const signature = createSignature("getdataused", timestamp);
+    // const dataUsedUrl = `${apiUrl}/getdatausedjson/${devId}/${signature}/${session}/${timestamp}`;
+    // const dataUsedResp = await fetch(dataUsedUrl);
+    // const data = await dataUsedResp.json();
+    const data = await apiUsed(session);
     resp.json(data);
   } catch (err) {
     console.error(err);
