@@ -22,8 +22,7 @@ const port = process.env.PORT || 4000;
 const apiUrl = process.env.apiUrl;
 const devId = process.env.devId;
 const databaseUrl = process.env.dataBaseUrl;
-let session = null;
-global.smiteSession = null;
+global.session = null;
 let timeout;
 let patchNumber = null;
 
@@ -110,8 +109,8 @@ app.get("/smiteapi", async (req, resp) => {
 //create a session to be able to get more info from smite api
 app.get("/createsession", async (req, resp) => {
   try {
-    console.log("creating Session", global.smiteSession);
-    global.smiteSession = await createSession(global.smiteSession);
+    console.log("creating Session", global.session);
+    await createSession(session);
 
     //smite api sessions can only last 15 min, so need to create a new one before then
     //this could make multiple setTimeouts, if called in succession, deleting a session
@@ -123,8 +122,7 @@ app.get("/createsession", async (req, resp) => {
     //   clearTimeout(timeout);
     // }
     // timeout = setTimeout(() => (session = null), 1000 * 60 * 14); //reset the session after 14 min
-    console.log("index session", global.smiteSession);
-    resp.json(global.smiteSession);
+    resp.json(global.session);
   } catch (error) {
     console.log(error);
   }
