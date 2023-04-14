@@ -16,13 +16,16 @@ import sessionTest from "./api/sessionTest";
 import patchnoteFetch from "./api/patchnotesFetch";
 import apiUsed from "./api/apiUsed";
 
+// import session from "./api/session"
+
 const app = express();
 const port = process.env.PORT || 4000;
 
 const apiUrl = process.env.apiUrl;
 const devId = process.env.devId;
 const databaseUrl = process.env.dataBaseUrl;
-global.session = null;
+let session = null;
+// global.session = null;
 let timeout;
 let patchNumber = null;
 
@@ -38,53 +41,53 @@ mongoose.set("strictQuery", true);
 mongoose.connect(databaseUrl);
 
 //check if version has changed once every 24 hours, if yes update gods & items
-setInterval(async () => {
-  console.log("checking for version number change");
-  session = await createSession(session);
-  if (timeout) {
-    //refresh 15 minute timer if another call is made before it is done
-    clearTimeout(timeout);
-  }
-  console.log("setting timeout");
-  timeout = setTimeout(() => (session = null), 1000 * 60 * 14);
-  const timestamp = DateTime.utc().toFormat("yyyyMMddHHmmss");
-  const signature = createSignature("getpatchinfo", timestamp);
-  const patchNotesUrl = `${apiUrl}/getpatchinfojson/${devId}/${signature}/${session}/${timestamp}`;
-  const patchNoteResp = await fetch(patchNotesUrl);
-  const patchData = await patchNoteResp.json();
-  console.log(
-    "current patch-",
-    patchNumber,
-    "updated patch-",
-    patchData.version_string
-  );
-  if (patchData.version_string !== patchNumber) {
-    console.log("getting gods");
-    const timeStamp = DateTime.utc().toFormat("yyyyMMddHHmmss");
-    const signature = createSignature("getgods", timeStamp);
-    const getGodsUrl = `${apiUrl}/getgodsjson/${devId}/${signature}/${session}/${timeStamp}/1`;
-    const smiteResp = await fetch(getGodsUrl);
-    const godsData = await smiteResp.json();
-    godsData.forEach(async (god) => {
-      GodModel.updateOne({ id: god.id }, god, { upsert: true }, function (err) {
-        if (err) console.error(err);
-      });
-      const signature = createSignature("getgodskins", timeStamp);
-      const getGodSkinsUrl = `${apiUrl}/getgodskinsjson/${devId}/${signature}/${session}/${timeStamp}/${god.id}/1`;
-      const smiteResp = await fetch(getGodSkinsUrl);
-      const skinsData = await smiteResp.json();
-      GodModel.updateOne(
-        { id: god.id },
-        { skins: skinsData },
-        { upsert: true },
-        function (err) {
-          if (err) console.error(err);
-        }
-      );
-    });
-  }
-  patchNumber = patchData.version_string;
-}, 1000 * 60 * 60 * 24);
+// setInterval(async () => {
+//   console.log("checking for version number change");
+//   session = await createSession(session);
+//   if (timeout) {
+//     //refresh 15 minute timer if another call is made before it is done
+//     clearTimeout(timeout);
+//   }
+//   console.log("setting timeout");
+//   timeout = setTimeout(() => (session = null), 1000 * 60 * 14);
+//   const timestamp = DateTime.utc().toFormat("yyyyMMddHHmmss");
+//   const signature = createSignature("getpatchinfo", timestamp);
+//   const patchNotesUrl = `${apiUrl}/getpatchinfojson/${devId}/${signature}/${session}/${timestamp}`;
+//   const patchNoteResp = await fetch(patchNotesUrl);
+//   const patchData = await patchNoteResp.json();
+//   console.log(
+//     "current patch-",
+//     patchNumber,
+//     "updated patch-",
+//     patchData.version_string
+//   );
+//   if (patchData.version_string !== patchNumber) {
+//     console.log("getting gods");
+//     const timeStamp = DateTime.utc().toFormat("yyyyMMddHHmmss");
+//     const signature = createSignature("getgods", timeStamp);
+//     const getGodsUrl = `${apiUrl}/getgodsjson/${devId}/${signature}/${session}/${timeStamp}/1`;
+//     const smiteResp = await fetch(getGodsUrl);
+//     const godsData = await smiteResp.json();
+//     godsData.forEach(async (god) => {
+//       GodModel.updateOne({ id: god.id }, god, { upsert: true }, function (err) {
+//         if (err) console.error(err);
+//       });
+//       const signature = createSignature("getgodskins", timeStamp);
+//       const getGodSkinsUrl = `${apiUrl}/getgodskinsjson/${devId}/${signature}/${session}/${timeStamp}/${god.id}/1`;
+//       const smiteResp = await fetch(getGodSkinsUrl);
+//       const skinsData = await smiteResp.json();
+//       GodModel.updateOne(
+//         { id: god.id },
+//         { skins: skinsData },
+//         { upsert: true },
+//         function (err) {
+//           if (err) console.error(err);
+//         }
+//       );
+//     });
+//   }
+//   patchNumber = patchData.version_string;
+// }, 1000 * 60 * 60 * 24);
 
 //server ping, returns timestamp
 app.get("/api", (req, resp) => {
@@ -109,7 +112,7 @@ app.get("/smiteapi", async (req, resp) => {
 //create a session to be able to get more info from smite api
 app.get("/createsession", async (req, resp) => {
   try {
-    console.log("creating Session", global.session);
+    console.log("creating Session", session);
     // await createSession();
 
     //smite api sessions can only last 15 min, so need to create a new one before then
@@ -122,7 +125,7 @@ app.get("/createsession", async (req, resp) => {
     //   clearTimeout(timeout);
     // }
     // timeout = setTimeout(() => (session = null), 1000 * 60 * 14); //reset the session after 14 min
-    resp.json(global.session);
+    resp.json(session);
   } catch (error) {
     console.log(error);
   }
@@ -297,25 +300,25 @@ app.get("/items/:id", async (req, resp) => {
   }
 });
 
-app.get("/getplayer/:playername", async (req, resp) => {
-  try {
-    const playerName = req.params.playername;
-    if (!session) {
-      session = await createSession(session);
-      if (timeout) {
-        //refresh 15 minute timer if another call is made before it is done
-        clearTimeout(timeout);
-      }
-      console.log("setting timeout");
-      timeout = setTimeout(() => (session = null), 1000 * 60 * 14);
-    }
-    const timeStamp = DateTime.utc().toFormat("yyyyMMddHHmmss");
-    const signature = createSignature("getplayer", timeStamp);
-    const getPlayerUrl = `${apiUrl}/getplayerjson/${devId}/${signature}/${session}/${timeStamp}/${playerName}`;
-    const playerResp = await fetch(getPlayerUrl);
-    const playerData = await playerResp.json();
-    resp.json(playerData);
-  } catch (err) {
-    console.error(err);
-  }
-});
+// app.get("/getplayer/:playername", async (req, resp) => {
+//   try {
+//     const playerName = req.params.playername;
+//     if (!session) {
+//       session = await createSession(session);
+//       if (timeout) {
+//         //refresh 15 minute timer if another call is made before it is done
+//         clearTimeout(timeout);
+//       }
+//       console.log("setting timeout");
+//       timeout = setTimeout(() => (session = null), 1000 * 60 * 14);
+//     }
+//     const timeStamp = DateTime.utc().toFormat("yyyyMMddHHmmss");
+//     const signature = createSignature("getplayer", timeStamp);
+//     const getPlayerUrl = `${apiUrl}/getplayerjson/${devId}/${signature}/${session}/${timeStamp}/${playerName}`;
+//     const playerResp = await fetch(getPlayerUrl);
+//     const playerData = await playerResp.json();
+//     resp.json(playerData);
+//   } catch (err) {
+//     console.error(err);
+//   }
+// });

@@ -3,10 +3,12 @@ import { DateTime } from "luxon";
 import createSignature from "./createSignature";
 import "dotenv/config";
 
+import { session, sessionUpdater, sessionTimeouter } from "../api/session";
+
 const apiUrl = process.env.apiUrl;
 
 const createSession = async () => {
-  if (!global.session) {
+  if (!session) {
     console.log("no session, creating session");
     const devId = process.env.devId;
     const timeStamp = DateTime.utc().toFormat("yyyyMMddHHmmss");
@@ -15,15 +17,11 @@ const createSession = async () => {
     const smiteSessionCreateResp = await fetch(createSessionUrl);
     const sessionData = await smiteSessionCreateResp.json();
 
-    console.log("setting timeout");
-    setTimeout(() => {
-      console.log("nulling session");
-      global.session = null;
-    }, 1000 * 60 * 14);
+    sessionTimeouter();
 
-    global.session = sessionData.session_id;
-    console.log("session", global.session);
+    sessionUpdater(sessionData.session_id);
   }
+  console.log("session", session);
   return;
 };
 
