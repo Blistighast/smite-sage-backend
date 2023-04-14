@@ -8,6 +8,7 @@ const smiteApiPing = async () => {
   const smitePingUrl = `${apiUrl}/pingjson`;
   const smitePingCall = await fetch(smitePingUrl);
   const data = await smitePingCall.json();
+  console.log(data);
   return data;
 };
 

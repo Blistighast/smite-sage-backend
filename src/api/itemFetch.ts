@@ -5,10 +5,12 @@ import "dotenv/config";
 import createSignature from "../utils/createSignature";
 import ItemModel from "./../schema/itemSchema";
 
+import { session } from "./session";
+
 const apiUrl = process.env.apiUrl;
 const devId = process.env.devId;
 
-const itemFetch = async (session) => {
+const itemFetch = async () => {
   console.log("getting items");
   const timeStamp = DateTime.utc().toFormat("yyyyMMddHHmmss");
   const signature = createSignature("getitems", timeStamp);

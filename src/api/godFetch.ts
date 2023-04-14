@@ -5,10 +5,12 @@ import "dotenv/config";
 import createSignature from "../utils/createSignature";
 import GodModel from "../schema/godSchema";
 
+import { session } from "./session";
+
 const apiUrl = process.env.apiUrl;
 const devId = process.env.devId;
 
-const godFetch = async (session) => {
+const godFetch = async () => {
   console.log("getting gods");
   const timeStamp = DateTime.utc().toFormat("yyyyMMddHHmmss");
   const signature = createSignature("getgods", timeStamp);

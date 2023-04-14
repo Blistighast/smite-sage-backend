@@ -5,7 +5,6 @@ import "dotenv/config";
 import createSignature from "../utils/createSignature";
 import createSession from "../utils/createSession";
 import { session } from "./session";
-// const session = require("./session").session;
 
 const apiUrl = process.env.apiUrl;
 const devId = process.env.devId;
