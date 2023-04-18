@@ -152,3 +152,18 @@ app.get("/getplayer/:playername", async (req, resp) => {
     console.error(err);
   }
 });
+
+app.get("/devmanualupdate", async (req, resp) => {
+  try {
+    await createSession();
+    const newPatch = await patchnoteFetch();
+    await godFetch();
+    await itemFetch();
+
+    currentPatch = newPatch;
+    console.log("updated patch-", newPatch);
+    resp.json("updated database");
+  } catch (err) {
+    console.log(err);
+  }
+});
