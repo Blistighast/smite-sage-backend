@@ -11,13 +11,16 @@ const devId = process.env.devId;
 
 const playerFetch = async (playerName) => {
   await createSession();
-
+  console.log("grabbing player from smite api");
   const timeStamp = DateTime.utc().toFormat("yyyyMMddHHmmss");
   const signature = createSignature("getplayer", timeStamp);
   const getPlayerUrl = `${apiUrl}/getplayerjson/${devId}/${signature}/${session}/${timeStamp}/${playerName}`;
   const playerResp = await fetch(getPlayerUrl);
   const playerData = await playerResp.json();
-  return playerData;
+  if (!playerData[0]) {
+    playerData[0] = null;
+  }
+  return playerData[0];
 };
 
 export default playerFetch;
