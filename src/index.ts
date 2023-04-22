@@ -105,7 +105,9 @@ app.get("/getuseddata", async (req, resp) => {
 app.get("/getgods", async (req, resp) => {
   try {
     console.log("grabbing gods list from db");
-    const gods = await GodModel.find();
+    const gods = await GodModel.find().select(
+      "Name Pantheon Roles godCard_URL godIcon_URL id"
+    );
     resp.json(gods);
   } catch (error) {
     console.log(error);
