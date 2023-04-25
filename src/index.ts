@@ -114,11 +114,11 @@ app.get("/getgods", async (req, resp) => {
   }
 });
 
-app.get("/gods/:id", async (req, resp) => {
+app.get("/gods/:name", async (req, resp) => {
   try {
-    const godId = req.params.id;
+    const godName = req.params.name;
     console.log("grabbing god from db");
-    const god = await GodModel.find({ id: godId });
+    const god = await GodModel.find({ Name: godName });
     resp.json(god);
   } catch (error) {
     console.error(error);
