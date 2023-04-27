@@ -117,7 +117,6 @@ app.get("/getgods", async (req, resp) => {
 app.get("/gods/:name", async (req, resp) => {
   try {
     const godName = req.params.name;
-    console.log("grabbing god from db");
     const god = await GodModel.find({ Name: godName });
     resp.json(god);
   } catch (error) {
@@ -138,7 +137,6 @@ app.get("/getitems", async (req, resp) => {
 app.get("/items/:name", async (req, resp) => {
   try {
     const itemName = req.params.name;
-    console.log("grabbing item");
     const item = await ItemModel.find({ DeviceName: itemName });
     resp.json(item);
   } catch (err) {
