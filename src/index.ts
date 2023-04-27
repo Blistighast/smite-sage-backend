@@ -127,7 +127,9 @@ app.get("/gods/:name", async (req, resp) => {
 app.get("/getitems", async (req, resp) => {
   try {
     console.log(" grabbing items from db");
-    const items = await ItemModel.find();
+    const items = await ItemModel.find().select(
+      "ItemId DeviceName ItemTier StartingItem itemIcon_URL Glyph Type Price"
+    );
     resp.json(items);
   } catch (error) {
     console.error(error);
