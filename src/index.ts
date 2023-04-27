@@ -169,3 +169,13 @@ app.get("/devmanualupdate", async (req, resp) => {
     console.log(err);
   }
 });
+
+app.get("/devcountgods", async (req, resp) => {
+  try {
+    const godCount = await GodModel.where().countDocuments();
+    console.log(godCount);
+    resp.json(godCount);
+  } catch (err) {
+    console.log(err);
+  }
+});
