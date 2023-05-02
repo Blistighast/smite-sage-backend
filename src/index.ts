@@ -17,6 +17,7 @@ import itemFetch from "./api/itemFetch";
 import playerFetch from "./api/playerFetch";
 
 import { session } from "./api/session";
+import webScraper from "./utils/webScraper";
 
 const app = express();
 const port = process.env.PORT || 4000;
@@ -166,7 +167,7 @@ app.get("/devmanualupdate", async (req, resp) => {
     console.log("updated patch-", newPatch);
     resp.json("updated database");
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 });
 
@@ -176,6 +177,14 @@ app.get("/devcountgods", async (req, resp) => {
     console.log(godCount);
     resp.json(godCount);
   } catch (err) {
-    console.log(err);
+    console.error(err);
+  }
+});
+
+app.get("/checkscraper", async (req, res) => {
+  try {
+    res.json(await webScraper());
+  } catch (err) {
+    console.error(err);
   }
 });
