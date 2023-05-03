@@ -10,7 +10,6 @@
   "author": "Brian Guterl",
   "license": "ISC",
   "dependencies": {
-    "cheerio": "^1.0.0-rc.12",
     "cors": "^2.8.5",
     "crypto-js": "^4.1.1",
     "dotenv": "^16.0.3",
@@ -18,6 +17,7 @@
     "luxon": "^3.2.1",
     "mongoose": "^6.9.0",
     "node-fetch": "^2.6.8",
+    "puppeteer": "^20.1.0",
     "typescript": "^4.8.0"
   },
   "devDependencies": {
