@@ -4,13 +4,12 @@ import fetch from "node-fetch";
 const webScraper = async () => {
   console.log("scraped a website");
   // const url = "https://www.theguardian.com/uk";
-  // const url = "https://www.smitegame.com/news/";
-  const url =
-    "http://webcache.googleusercontent.com/search?q=cache:https://www.smitegame.com/news/";
+  const url = "https://www.smitegame.com/news/";
   // const url = "http://localhost:3000/gods";
   try {
     const res = await fetch(url);
     const html = await res.text();
+    console.log(html);
     const $ = load(html);
     const articles = [];
     // console.log($(`.posts-wrapper`, html));
@@ -19,8 +18,8 @@ const webScraper = async () => {
     // const $a = $(".posts-wrapper").find('a').each((i, ele) => {
     //   console.log(ele)
     // });
-    const links = [...$("a")].map((e) => $(e).attr("href"));
-    console.log(links);
+    // const links = [...$("a")].map((e) => $(e).attr("href"));
+    // console.log(links);
     // $(".posts-wrapper")
     //   .find("a")
     //   .each((i, ele) => {
@@ -35,7 +34,7 @@ const webScraper = async () => {
     //   console.log(link);
     //   const article = {};
     // });
-    return links;
+    return html;
   } catch (err) {
     console.error(err);
   }
