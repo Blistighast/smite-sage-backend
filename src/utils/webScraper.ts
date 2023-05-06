@@ -1,64 +1,150 @@
 import puppeteer from "puppeteer";
 
-const webScraper = async () => {
-  const url = "https://www.smitegame.com/news/";
+let retry = 0;
+let maxRetries = 5;
 
-  console.log(`scraping ${url}`);
+const webScraper = async () => {
+  const newsUrl = "https://www.smitegame.com/news/";
+
+  console.log(`scraping ${newsUrl}`);
+
+  retry++;
+
+  // let proxyList = [
+  //   "202.131.234.142:39330",
+  //   "45.235.216.112:8080",
+  //   "129.146.249.135:80",
+  //   "148.251.20.79",
+  // ];
+
+  // var proxy = proxyList[Math.floor(Math.random() * proxyList.length)];
+
   // { headless: false } use in launch to see browser for testing
-  const browser = await puppeteer.launch();
+  // { headless: "new" } change to new headless and stops warning
+  const browser = await puppeteer.launch({
+    headless: false,
+    // args: ["--proxy-server=" + proxy],
+  });
+
   try {
     const page = await browser.newPage();
-    await page.goto(url);
+    await page.setUserAgent(
+      "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36"
+    );
+
+    await page.goto(newsUrl);
     await page.waitForSelector(".home-tile");
 
-    let godTiles = await page.evaluate(() => {
-      let tileElements = document.body.querySelectorAll(".posts-wrapper a");
-      let godTiles = Object.values(tileElements)
+    const articleTiles = await page.evaluate(() => {
+      const tileElements = document.body.querySelectorAll(".posts-wrapper a");
+
+      const articleTiles = Object.values(tileElements)
         .map((tile) => {
+          const baseUrl = "https://www.smitegame.com";
           const subhead =
             tile.querySelector(".subhead.right").textContent ?? null;
+
+          const article = {
+            articleUrl: `${baseUrl}${tile.getAttribute("href")}`,
+            headline: tile.querySelector(".headline").textContent,
+          };
+
           if (
             subhead === "Console,Dev Insights" &&
             tile.querySelector(".headline").textContent.includes("Bonus")
           ) {
             return {
               type: "minorPatchInfo",
-              articleUrl: tile.getAttribute("href"),
-              headLine: tile.querySelector(".headline").textContent,
+              ...article,
             };
           } else if (subhead === "Console,Dev Insights") {
             return {
               type: "majorPatchInfo",
-              articleUrl: tile.getAttribute("href"),
-              headLine: tile.querySelector(".headline").textContent,
+              ...article,
             };
           } else if (subhead === "Dev Insights,Gods") {
             return {
               type: "godInfo",
-              articleUrl: tile.getAttribute("href"),
-              headLine: tile.querySelector(".headline").textContent,
+              ...article,
             };
           } else if (subhead === "Dev Insights,News") {
             return {
               type: "seasonInfo",
-              articleUrl: tile.getAttribute("href"),
-              headLine: tile.querySelector(".headline").textContent,
+              ...article,
             };
           } else {
             return;
           }
         })
         .filter((tile) => tile);
-      return godTiles;
+
+      return articleTiles;
     });
+
+    const articles = [];
+
+    for (let article of articleTiles) {
+      try {
+        let page = await browser.newPage();
+        console.log(`scraping ${article.headline}`);
+        await page.goto(article.articleUrl, { waitUntil: "load" });
+        await page.waitForSelector(".featured-image");
+
+        const articleImage = await page.evaluate(() => {
+          const articleImageElement =
+            document.body.querySelector(".featured-image");
+
+          const articleImageUrl = articleImageElement.getAttribute("style");
+          return articleImageUrl.split('"')[1];
+        });
+
+        articles.push({ ...article, imageUrl: articleImage });
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
     await browser.close();
-    console.log(godTiles);
-    return godTiles;
+    return articles;
   } catch (err) {
     console.error(err);
-    console.log("scrape failed");
     await browser.close();
+    console.log("scrape failed");
+    if (retry < maxRetries) {
+      console.log("retrying scrape");
+      webScraper();
+    }
   }
 };
 
 export default webScraper;
+
+// await page.goto(articleTiles[0].articleUrl);
+// await page.waitForSelector(".featured-image");
+
+// const articleInfo = await page.evaluate(() => {
+//   const articleImageElement =
+//     document.body.querySelector(".featured-image");
+
+//   const articleImageUrl = articleImageElement.getAttribute("style");
+//   return { imageUrl: articleImageUrl };
+// });
+
+// const articleInfo = articleTiles.map(async (article) => {
+//   const browser = await puppeteer.launch({ headless: "new" });
+//   let page = await browser.newPage();
+//   // page.waitForNavigation();
+//   console.log(`scraping ${article.headline}`);
+//   await page.goto(article.articleUrl, { waitUntil: "load" });
+//   await page.waitForSelector(".featured-image");
+
+//   const articleInfo = await page.evaluate(() => {
+//     const articleImageElement =
+//       document.body.querySelector(".featured-image");
+
+//     const articleImageUrl = articleImageElement.getAttribute("style");
+//     return { imageUrl: articleImageUrl };
+//   });
+
+//   return articleInfo;
+// });
