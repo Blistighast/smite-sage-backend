@@ -1,4 +1,5 @@
 import puppeteer from "puppeteer";
+import getDateFromTimeAgo from "./getDateFromTimeAgo";
 
 let retry = 0;
 let maxRetries = 5;
@@ -22,7 +23,7 @@ const webScraper = async () => {
   // { headless: false } use in launch to see browser for testing
   // { headless: "new" } change to new headless and stops warning
   const browser = await puppeteer.launch({
-    headless: false,
+    headless: "new",
     // args: ["--proxy-server=" + proxy],
   });
 
@@ -47,6 +48,7 @@ const webScraper = async () => {
           const article = {
             articleUrl: `${baseUrl}${tile.getAttribute("href")}`,
             headline: tile.querySelector(".headline").textContent,
+            datePosted: tile.querySelector(".subhead.left").textContent,
           };
 
           if (
@@ -98,7 +100,11 @@ const webScraper = async () => {
           return articleImageUrl.split('"')[1];
         });
 
-        articles.push({ ...article, imageUrl: articleImage });
+        articles.push({
+          ...article,
+          datePosted: getDateFromTimeAgo(article.datePosted),
+          imageUrl: articleImage,
+        });
       } catch (err) {
         console.error(err);
       }
@@ -118,17 +124,6 @@ const webScraper = async () => {
 };
 
 export default webScraper;
-
-// await page.goto(articleTiles[0].articleUrl);
-// await page.waitForSelector(".featured-image");
-
-// const articleInfo = await page.evaluate(() => {
-//   const articleImageElement =
-//     document.body.querySelector(".featured-image");
-
-//   const articleImageUrl = articleImageElement.getAttribute("style");
-//   return { imageUrl: articleImageUrl };
-// });
 
 // const articleInfo = articleTiles.map(async (article) => {
 //   const browser = await puppeteer.launch({ headless: "new" });
