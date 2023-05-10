@@ -47,11 +47,6 @@ setInterval(async () => {
   await articleUpdater();
 }, 1000 * 60 * 60 * 24);
 
-setInterval(async () => {
-  console.log("scraping for new smite articles");
-  const articles = await webScraper();
-}, 1000 * 60 * 60 * 24);
-
 //server ping, returns timestamp
 app.get("/api", (req, resp) => {
   try {
@@ -121,6 +116,17 @@ app.get("/gods/:name", async (req, resp) => {
   try {
     const godName = req.params.name;
     const god = await GodModel.find({ Name: godName });
+    resp.json(god);
+  } catch (error) {
+    console.error(error);
+  }
+});
+
+app.get("/latestgod", async (req, resp) => {
+  try {
+    //swap to this when new god comes in
+    // const god = await GodModel.find().sort({ createdAt: -1 }).limit(1);
+    const god = await GodModel.find({ Name: "Ix Chel" }); //temp until new god with createdAt is added
     resp.json(god);
   } catch (error) {
     console.error(error);
