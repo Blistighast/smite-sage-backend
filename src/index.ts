@@ -18,7 +18,6 @@ import itemFetch from "./api/itemFetch";
 import playerFetch from "./api/playerFetch";
 
 import { session } from "./api/session";
-import webScraper from "./utils/webScraper";
 import patchUpdater from "./db/patchUpdater";
 import articleUpdater from "./db/articleUpdater";
 
