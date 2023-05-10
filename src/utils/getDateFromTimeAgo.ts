@@ -27,7 +27,6 @@ const getDateFromTimeAgo = (relativeTime) => {
     timeAgo.hours = hoursAgoMatch[1];
   }
   if (daysAgoMatch) {
-    console.log(daysAgoMatch);
     timeAgo.days = daysAgoMatch[1];
   }
   if (monthsAgoMatch) {

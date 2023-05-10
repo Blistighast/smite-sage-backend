@@ -124,22 +124,3 @@ const webScraper = async () => {
 };
 
 export default webScraper;
-
-// const articleInfo = articleTiles.map(async (article) => {
-//   const browser = await puppeteer.launch({ headless: "new" });
-//   let page = await browser.newPage();
-//   // page.waitForNavigation();
-//   console.log(`scraping ${article.headline}`);
-//   await page.goto(article.articleUrl, { waitUntil: "load" });
-//   await page.waitForSelector(".featured-image");
-
-//   const articleInfo = await page.evaluate(() => {
-//     const articleImageElement =
-//       document.body.querySelector(".featured-image");
-
-//     const articleImageUrl = articleImageElement.getAttribute("style");
-//     return { imageUrl: articleImageUrl };
-//   });
-
-//   return articleInfo;
-// });

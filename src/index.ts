@@ -7,6 +7,7 @@ import "dotenv/config";
 import createSession from "./utils/createSession";
 import GodModel from "./schema/godSchema";
 import ItemModel from "./schema/itemSchema";
+import ArticleModel from "./schema/articleSchema";
 import smiteApiPing from "./api/apiPing";
 import serverPing from "./api/serverPing";
 import sessionTest from "./api/sessionTest";
@@ -18,6 +19,8 @@ import playerFetch from "./api/playerFetch";
 
 import { session } from "./api/session";
 import webScraper from "./utils/webScraper";
+import patchUpdater from "./db/patchUpdater";
+import articleUpdater from "./db/articleUpdater";
 
 const app = express();
 const port = process.env.PORT || 4000;
@@ -36,18 +39,17 @@ app.use(
 mongoose.set("strictQuery", true);
 mongoose.connect(databaseUrl);
 
-//check if version has changed once every 24 hours, if yes update gods & items
+//check if version has changed once every 24 hours, if yes update gods & items, check if any new article released
 setInterval(async () => {
-  console.log("checking for version number change");
-  await createSession();
-  const newPatch = await patchnoteFetch();
-
-  console.log("current patch-", currentPatch, "updated patch-", newPatch);
-  if (newPatch !== currentPatch) {
-    await godFetch();
-    await itemFetch();
-  }
+  const newPatch = await patchUpdater(currentPatch);
   currentPatch = newPatch;
+
+  await articleUpdater();
+}, 1000 * 60 * 60 * 24);
+
+setInterval(async () => {
+  console.log("scraping for new smite articles");
+  const articles = await webScraper();
 }, 1000 * 60 * 60 * 24);
 
 //server ping, returns timestamp
@@ -147,6 +149,18 @@ app.get("/items/:name", async (req, resp) => {
   }
 });
 
+app.get("/article/:type", async (req, resp) => {
+  try {
+    const articleType = req.params.type;
+    const article = await ArticleModel.find({ type: articleType })
+      .sort({ datePosted: -1 })
+      .limit(1);
+    resp.json(article);
+  } catch (err) {
+    console.error(err);
+  }
+});
+
 app.get("/getplayer/:playername", async (req, resp) => {
   try {
     const player = await playerFetch(req.params.playername);
@@ -183,7 +197,8 @@ app.get("/devcountgods", async (req, resp) => {
 
 app.get("/checkscraper", async (req, res) => {
   try {
-    res.json(await webScraper());
+    // res.json(await webScraper());
+    res.json(await articleUpdater());
   } catch (err) {
     console.error(err);
   }
