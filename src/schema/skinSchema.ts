@@ -14,6 +14,9 @@ export const skinSchema = new mongoose.Schema({
   price_gems: Number,
 });
 
+// generate createdAt and updatedAt
+skinSchema.set("timestamps", true);
+
 //model
 const SkinModel = mongoose.model("Skin", skinSchema);
 

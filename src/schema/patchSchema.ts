@@ -5,6 +5,9 @@ const patchSchema = new mongoose.Schema({
   newGod: String,
 });
 
+// generate createdAt and updatedAt
+patchSchema.set("timestamps", true);
+
 const PatchModel = mongoose.model("patch", patchSchema);
 
 export default PatchModel;

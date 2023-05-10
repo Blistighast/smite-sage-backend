@@ -241,6 +241,9 @@ const godSchema = new mongoose.Schema({
   skins: [skinSchema],
 });
 
+// generate createdAt and updatedAt
+godSchema.set("timestamps", true);
+
 //model
 const GodModel = mongoose.model("God", godSchema);
 

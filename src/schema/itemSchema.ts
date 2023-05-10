@@ -32,6 +32,9 @@ const itemSchema = new mongoose.Schema({
   },
 });
 
+// generate createdAt and updatedAt
+itemSchema.set("timestamps", true);
+
 //model
 const ItemModel = mongoose.model("Item", itemSchema);
 
