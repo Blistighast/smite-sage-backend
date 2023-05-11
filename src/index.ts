@@ -30,7 +30,7 @@ let currentPatch = null;
 app.listen(port, () => console.log(`listening on port ${port}`));
 app.use(
   cors({
-    origin: [process.env.frontendUrl],
+    origin: [process.env.frontendUrl || "http://localhost:3000"],
   })
 );
 
