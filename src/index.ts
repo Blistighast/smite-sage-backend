@@ -22,6 +22,7 @@ import patchUpdater from "./db/patchUpdater";
 import articleUpdater from "./db/articleUpdater";
 
 const app = express();
+const router = express.Router();
 const port = process.env.PORT || 4000;
 
 const databaseUrl = process.env.dataBaseUrl;
@@ -37,6 +38,24 @@ app.use(
 // to stop mongoose warning of future mongoose update
 mongoose.set("strictQuery", true);
 mongoose.connect(databaseUrl);
+
+//check server health
+router.use((req, res, next) => {
+  res.header("Access-Control-Allow-Methods", "GET");
+  next();
+});
+
+router.get("/health", (req, res) => {
+  const data = {
+    uptime: process.uptime(),
+    message: "Ok",
+    date: new Date(),
+  };
+
+  res.status(200).send(data);
+});
+
+app.use("/api", router);
 
 //check if version has changed once every 24 hours, if yes update gods & items, check if any new article released
 setInterval(async () => {
