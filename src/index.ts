@@ -2,7 +2,6 @@ import express from "express";
 import cors from "cors";
 import mongoose from "mongoose";
 import nodeCron from "node-cron";
-import { DateTime } from "luxon";
 import "dotenv/config";
 
 //custom functions
@@ -60,7 +59,7 @@ router.get("/health", (req, res) => {
 app.use("/api", router);
 
 //ping server every 14 min so it doesnt go to sleep
-nodeCron.schedule("*/2 * * * *", () => {
+nodeCron.schedule("*/14 * * * *", () => {
   console.log("wake up");
 });
 
