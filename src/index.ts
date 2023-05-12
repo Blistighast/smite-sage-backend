@@ -1,6 +1,8 @@
 import express from "express";
 import cors from "cors";
 import mongoose from "mongoose";
+import nodeCron from "node-cron";
+import { DateTime } from "luxon";
 import "dotenv/config";
 
 //custom functions
@@ -56,6 +58,11 @@ router.get("/health", (req, res) => {
 });
 
 app.use("/api", router);
+
+//ping server every 14 min so it doesnt go to sleep
+nodeCron.schedule("*/2 * * * *", () => {
+  console.log("wake up");
+});
 
 //check if version has changed once every 24 hours, if yes update gods & items, check if any new article released
 setInterval(async () => {
