@@ -78,6 +78,7 @@ app.get("/api", (req, resp) => {
     catch (error) {
         console.log(error);
     }
+    return resp.send("I got a ping from the front end");
 });
 app.get("/smiteapi", (req, resp) => __awaiter(void 0, void 0, void 0, function* () {
     try {

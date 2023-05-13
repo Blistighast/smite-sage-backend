@@ -85,6 +85,7 @@ app.get("/api", (req, resp) => {
   } catch (error) {
     console.log(error);
   }
+  return resp.send("I got a ping from the front end");
 });
 
 //ping the smite api
