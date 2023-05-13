@@ -59,7 +59,7 @@ router.get("/health", (req, res) => {
 app.use("/api", router);
 
 //ping server every 14 min so it doesnt go to sleep
-nodeCron.schedule("*/14 * * * *", () => {
+nodeCron.schedule("*/10 * * * *", () => {
   console.log("wake up");
 });
 
