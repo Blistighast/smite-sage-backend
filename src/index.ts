@@ -233,3 +233,5 @@ app.get("/checkscraper", async (req, res) => {
     console.error(err);
   }
 });
+
+module.exports = app;
