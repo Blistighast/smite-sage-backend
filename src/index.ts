@@ -58,11 +58,6 @@ router.get("/health", (req, res) => {
 
 app.use("/api", router);
 
-//ping server every 14 min so it doesnt go to sleep
-nodeCron.schedule("*/9 * * * *", () => {
-  console.log("wake up");
-});
-
 //check if version has changed once every 24 hours, if yes update gods & items, check if any new article released
 setInterval(async () => {
   const newPatch = await patchUpdater(currentPatch);
