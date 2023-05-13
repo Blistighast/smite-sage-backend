@@ -71,6 +71,18 @@ setInterval(async () => {
   await articleUpdater();
 }, 1000 * 60 * 60 * 24);
 
+app.get("/", (req, res) => {
+  try {
+    res.send("Smite Sage API");
+  } catch (err) {
+    console.error(err);
+  }
+});
+
+app.get("/ping", (_req, res) => {
+  return res.send("pong 🏓");
+});
+
 //server ping, returns timestamp
 app.get("/api", (req, resp) => {
   try {
@@ -234,4 +246,4 @@ app.get("/checkscraper", async (req, res) => {
   }
 });
 
-module.exports = app;
+// module.exports = app;

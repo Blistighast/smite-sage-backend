@@ -1,4 +1,4 @@
-import webScraper from "src/utils/webScraper";
+import webScraper from "../utils/webScraper";
 
 const newsFetch = async () => {
   webScraper();

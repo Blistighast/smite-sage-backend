@@ -1,6 +1,6 @@
-import godFetch from "src/api/godFetch";
-import itemFetch from "src/api/itemFetch";
-import GodModel from "src/schema/godSchema";
+import godFetch from "../api/godFetch";
+import itemFetch from "../api/itemFetch";
+import GodModel from "../schema/godSchema";
 
 const updateDB = async (patchVersion) => {
   const godAmount = await GodModel.where().countDocuments();

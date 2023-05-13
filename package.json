@@ -4,10 +4,18 @@
   "description": "backend server for the smite sage frontend",
   "private": true,
   "scripts": {
-    "start": "ts-node-esm src/index.ts",
-    "dev": "nodemon src/index.ts",
+    "dev": "ts-node-esm src/index.ts",
+    "start": "nodemon src/index.ts",
+    "build": "rimraf dist && tsc",
+    "ts.check": "tsc --project tsconfig.json",
+    "add-build": "git add dist",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "pre-commit": [
+    "ts.check",
+    "build",
+    "add-build"
+  ],
   "author": "Brian Guterl",
   "license": "ISC",
   "dependencies": {
@@ -23,6 +31,8 @@
     "typescript": "^4.8.0"
   },
   "devDependencies": {
-    "@types/node": "^18.11.18"
+    "@types/node": "^18.11.18",
+    "pre-commit": "^1.2.2",
+    "rimraf": "^5.0.0"
   }
 }
