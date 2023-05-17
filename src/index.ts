@@ -41,12 +41,12 @@ mongoose.set("strictQuery", true);
 mongoose.connect(databaseUrl);
 
 //check server health
-router.use((req, res, next) => {
+router.use((_req, res, next) => {
   res.header("Access-Control-Allow-Methods", "GET");
   next();
 });
 
-router.get("/health", (req, res) => {
+router.get("/health", (_req, res) => {
   const data = {
     uptime: process.uptime(),
     message: "Ok",
@@ -235,7 +235,6 @@ app.get("/devcountgods", async (_req, resp) => {
 
 app.get("/checkscraper", async (_req, res) => {
   try {
-    // res.json(await webScraper());
     res.json(await articleUpdater());
   } catch (err) {
     console.error(err);

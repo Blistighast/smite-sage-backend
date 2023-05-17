@@ -42,11 +42,11 @@ app.use((0, cors_1.default)({
 }));
 mongoose_1.default.set("strictQuery", true);
 mongoose_1.default.connect(databaseUrl);
-router.use((req, res, next) => {
+router.use((_req, res, next) => {
     res.header("Access-Control-Allow-Methods", "GET");
     next();
 });
-router.get("/health", (req, res) => {
+router.get("/health", (_req, res) => {
     const data = {
         uptime: process.uptime(),
         message: "Ok",
