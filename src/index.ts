@@ -66,7 +66,7 @@ setInterval(async () => {
   await articleUpdater();
 }, 1000 * 60 * 60 * 24);
 
-app.get("/", (req, res) => {
+app.get("/", (_req, res) => {
   try {
     res.send("Smite Sage API");
   } catch (err) {
@@ -79,7 +79,7 @@ app.get("/ping", (_req, res) => {
 });
 
 //server ping, returns timestamp
-app.get("/api", (req, resp) => {
+app.get("/api", (_req, resp) => {
   try {
     resp.json(serverPing());
   } catch (error) {
@@ -89,7 +89,7 @@ app.get("/api", (req, resp) => {
 });
 
 //ping the smite api
-app.get("/smiteapi", async (req, resp) => {
+app.get("/smiteapi", async (_req, resp) => {
   try {
     resp.json(await smiteApiPing());
   } catch (error) {
@@ -98,7 +98,7 @@ app.get("/smiteapi", async (req, resp) => {
 });
 
 //create a session to be able to get more info from smite api
-app.get("/createsession", async (req, resp) => {
+app.get("/createsession", async (_req, resp) => {
   try {
     await createSession();
 
@@ -108,7 +108,7 @@ app.get("/createsession", async (req, resp) => {
   }
 });
 
-app.get("/testsession", async (req, resp) => {
+app.get("/testsession", async (_req, resp) => {
   try {
     resp.json(await sessionTest());
   } catch (error) {
@@ -116,7 +116,7 @@ app.get("/testsession", async (req, resp) => {
   }
 });
 
-app.get("/patchnotes", async (req, resp) => {
+app.get("/patchnotes", async (_req, resp) => {
   try {
     resp.json(await patchnoteFetch());
   } catch (err) {
@@ -124,7 +124,7 @@ app.get("/patchnotes", async (req, resp) => {
   }
 });
 
-app.get("/getuseddata", async (req, resp) => {
+app.get("/getuseddata", async (_req, resp) => {
   try {
     resp.json(await apiUsed());
   } catch (err) {
@@ -132,7 +132,7 @@ app.get("/getuseddata", async (req, resp) => {
   }
 });
 
-app.get("/getgods", async (req, resp) => {
+app.get("/getgods", async (_req, resp) => {
   try {
     console.log("grabbing gods list from db");
     const gods = await GodModel.find().select(
@@ -154,7 +154,7 @@ app.get("/gods/:name", async (req, resp) => {
   }
 });
 
-app.get("/latestgod", async (req, resp) => {
+app.get("/latestgod", async (_req, resp) => {
   try {
     //swap to this when new god comes in
     // const god = await GodModel.find().sort({ createdAt: -1 }).limit(1);
@@ -165,7 +165,7 @@ app.get("/latestgod", async (req, resp) => {
   }
 });
 
-app.get("/getitems", async (req, resp) => {
+app.get("/getitems", async (_req, resp) => {
   try {
     console.log(" grabbing items from db");
     const items = await ItemModel.find().select(
@@ -208,7 +208,7 @@ app.get("/getplayer/:playername", async (req, resp) => {
   }
 });
 
-app.get("/devmanualupdate", async (req, resp) => {
+app.get("/devmanualupdate", async (_req, resp) => {
   try {
     await createSession();
     const newPatch = await patchnoteFetch();
@@ -223,7 +223,7 @@ app.get("/devmanualupdate", async (req, resp) => {
   }
 });
 
-app.get("/devcountgods", async (req, resp) => {
+app.get("/devcountgods", async (_req, resp) => {
   try {
     const godCount = await GodModel.where().countDocuments();
     console.log(godCount);
@@ -233,7 +233,7 @@ app.get("/devcountgods", async (req, resp) => {
   }
 });
 
-app.get("/checkscraper", async (req, res) => {
+app.get("/checkscraper", async (_req, res) => {
   try {
     // res.json(await webScraper());
     res.json(await articleUpdater());
@@ -241,5 +241,3 @@ app.get("/checkscraper", async (req, res) => {
     console.error(err);
   }
 });
-
-// module.exports = app;

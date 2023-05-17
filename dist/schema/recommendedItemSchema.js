@@ -15,6 +15,7 @@ const recommendedItemSchema = new mongoose_1.default.Schema({
     item_id: Number,
     role_value_id: Number,
 });
+recommendedItemSchema.set("timestamps", true);
 const recommendedItemModel = mongoose_1.default.model("Skin", recommendedItemSchema);
 exports.default = recommendedItemModel;
 //# sourceMappingURL=recommendedItemSchema.js.map

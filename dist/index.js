@@ -60,7 +60,7 @@ setInterval(() => __awaiter(void 0, void 0, void 0, function* () {
     currentPatch = newPatch;
     yield (0, articleUpdater_1.default)();
 }), 1000 * 60 * 60 * 24);
-app.get("/", (req, res) => {
+app.get("/", (_req, res) => {
     try {
         res.send("Smite Sage API");
     }
@@ -71,7 +71,7 @@ app.get("/", (req, res) => {
 app.get("/ping", (_req, res) => {
     return res.send("pong 🏓");
 });
-app.get("/api", (req, resp) => {
+app.get("/api", (_req, resp) => {
     try {
         resp.json((0, serverPing_1.default)());
     }
@@ -80,7 +80,7 @@ app.get("/api", (req, resp) => {
     }
     return resp.send("I got a ping from the front end");
 });
-app.get("/smiteapi", (req, resp) => __awaiter(void 0, void 0, void 0, function* () {
+app.get("/smiteapi", (_req, resp) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         resp.json(yield (0, apiPing_1.default)());
     }
@@ -88,7 +88,7 @@ app.get("/smiteapi", (req, resp) => __awaiter(void 0, void 0, void 0, function* 
         console.log(error);
     }
 }));
-app.get("/createsession", (req, resp) => __awaiter(void 0, void 0, void 0, function* () {
+app.get("/createsession", (_req, resp) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         yield (0, createSession_1.default)();
         resp.json(session_1.session);
@@ -97,7 +97,7 @@ app.get("/createsession", (req, resp) => __awaiter(void 0, void 0, void 0, funct
         console.log(error);
     }
 }));
-app.get("/testsession", (req, resp) => __awaiter(void 0, void 0, void 0, function* () {
+app.get("/testsession", (_req, resp) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         resp.json(yield (0, sessionTest_1.default)());
     }
@@ -105,7 +105,7 @@ app.get("/testsession", (req, resp) => __awaiter(void 0, void 0, void 0, functio
         console.log(error);
     }
 }));
-app.get("/patchnotes", (req, resp) => __awaiter(void 0, void 0, void 0, function* () {
+app.get("/patchnotes", (_req, resp) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         resp.json(yield (0, patchnotesFetch_1.default)());
     }
@@ -113,7 +113,7 @@ app.get("/patchnotes", (req, resp) => __awaiter(void 0, void 0, void 0, function
         console.log(err);
     }
 }));
-app.get("/getuseddata", (req, resp) => __awaiter(void 0, void 0, void 0, function* () {
+app.get("/getuseddata", (_req, resp) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         resp.json(yield (0, apiUsed_1.default)());
     }
@@ -121,7 +121,7 @@ app.get("/getuseddata", (req, resp) => __awaiter(void 0, void 0, void 0, functio
         console.error(err);
     }
 }));
-app.get("/getgods", (req, resp) => __awaiter(void 0, void 0, void 0, function* () {
+app.get("/getgods", (_req, resp) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         console.log("grabbing gods list from db");
         const gods = yield godSchema_1.default.find().select("Name Pantheon Roles godCard_URL godIcon_URL id");
@@ -141,7 +141,7 @@ app.get("/gods/:name", (req, resp) => __awaiter(void 0, void 0, void 0, function
         console.error(error);
     }
 }));
-app.get("/latestgod", (req, resp) => __awaiter(void 0, void 0, void 0, function* () {
+app.get("/latestgod", (_req, resp) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const god = yield godSchema_1.default.find({ Name: "Ix Chel" });
         resp.json(god);
@@ -150,7 +150,7 @@ app.get("/latestgod", (req, resp) => __awaiter(void 0, void 0, void 0, function*
         console.error(error);
     }
 }));
-app.get("/getitems", (req, resp) => __awaiter(void 0, void 0, void 0, function* () {
+app.get("/getitems", (_req, resp) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         console.log(" grabbing items from db");
         const items = yield itemSchema_1.default.find().select("ItemId DeviceName ItemTier StartingItem itemIcon_URL Glyph Type Price");
@@ -191,7 +191,7 @@ app.get("/getplayer/:playername", (req, resp) => __awaiter(void 0, void 0, void 
         console.error(err);
     }
 }));
-app.get("/devmanualupdate", (req, resp) => __awaiter(void 0, void 0, void 0, function* () {
+app.get("/devmanualupdate", (_req, resp) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         yield (0, createSession_1.default)();
         const newPatch = yield (0, patchnotesFetch_1.default)();
@@ -205,7 +205,7 @@ app.get("/devmanualupdate", (req, resp) => __awaiter(void 0, void 0, void 0, fun
         console.error(err);
     }
 }));
-app.get("/devcountgods", (req, resp) => __awaiter(void 0, void 0, void 0, function* () {
+app.get("/devcountgods", (_req, resp) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const godCount = yield godSchema_1.default.where().countDocuments();
         console.log(godCount);
@@ -215,7 +215,7 @@ app.get("/devcountgods", (req, resp) => __awaiter(void 0, void 0, void 0, functi
         console.error(err);
     }
 }));
-app.get("/checkscraper", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+app.get("/checkscraper", (_req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         res.json(yield (0, articleUpdater_1.default)());
     }

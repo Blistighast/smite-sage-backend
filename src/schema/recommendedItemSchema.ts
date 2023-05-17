@@ -13,6 +13,9 @@ const recommendedItemSchema = new mongoose.Schema({
   role_value_id: Number,
 });
 
+// generate createdAt and updatedAt
+recommendedItemSchema.set("timestamps", true);
+
 //model
 const recommendedItemModel = mongoose.model("Skin", recommendedItemSchema);
 
