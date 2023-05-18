@@ -1,7 +1,7 @@
 import express from "express";
 import cors from "cors";
 import mongoose from "mongoose";
-import nodeCron from "node-cron";
+import cron from "node-cron";
 import "dotenv/config";
 
 //custom functions
@@ -59,12 +59,19 @@ router.get("/health", (_req, res) => {
 app.use("/api", router);
 
 //check if version has changed once every 24 hours, if yes update gods & items, check if any new article released
-setInterval(async () => {
+cron.schedule("0 0 * * *", async () => {
   const newPatch = await patchUpdater(currentPatch);
   currentPatch = newPatch;
 
   await articleUpdater();
-}, 1000 * 60 * 60 * 24);
+});
+
+// setInterval(async () => {
+//   const newPatch = await patchUpdater(currentPatch);
+//   currentPatch = newPatch;
+
+//   await articleUpdater();
+// }, 1000 * 60 * 60 * 24);
 
 app.get("/", (_req, res) => {
   try {
@@ -157,7 +164,7 @@ app.get("/gods/:name", async (req, resp) => {
 app.get("/latestgod", async (_req, resp) => {
   try {
     //swap to this when new god comes in
-    // const god = await GodModel.find().sort({ createdAt: -1 }).limit(1);
+    // const gods = await GodModel.find().sort({ createdAt: -1 }).limit(2);
     const god = await GodModel.find({ Name: "Ix Chel" }); //temp until new god with createdAt is added
     resp.json(god);
   } catch (error) {

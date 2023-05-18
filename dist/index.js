@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const cors_1 = __importDefault(require("cors"));
 const mongoose_1 = __importDefault(require("mongoose"));
+const node_cron_1 = __importDefault(require("node-cron"));
 require("dotenv/config");
 const createSession_1 = __importDefault(require("./utils/createSession"));
 const godSchema_1 = __importDefault(require("./schema/godSchema"));
@@ -55,11 +56,11 @@ router.get("/health", (_req, res) => {
     res.status(200).send(data);
 });
 app.use("/api", router);
-setInterval(() => __awaiter(void 0, void 0, void 0, function* () {
+node_cron_1.default.schedule("0 0 * * *", () => __awaiter(void 0, void 0, void 0, function* () {
     const newPatch = yield (0, patchUpdater_1.default)(currentPatch);
     currentPatch = newPatch;
     yield (0, articleUpdater_1.default)();
-}), 1000 * 60 * 60 * 24);
+}));
 app.get("/", (_req, res) => {
     try {
         res.send("Smite Sage API");
