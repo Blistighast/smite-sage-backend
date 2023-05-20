@@ -21,19 +21,15 @@ const createSession_1 = __importDefault(require("./utils/createSession"));
 const godSchema_1 = __importDefault(require("./schema/godSchema"));
 const itemSchema_1 = __importDefault(require("./schema/itemSchema"));
 const articleSchema_1 = __importDefault(require("./schema/articleSchema"));
-const apiPing_1 = __importDefault(require("./api/apiPing"));
-const serverPing_1 = __importDefault(require("./api/serverPing"));
-const sessionTest_1 = __importDefault(require("./api/sessionTest"));
 const patchnotesFetch_1 = __importDefault(require("./api/patchnotesFetch"));
-const apiUsed_1 = __importDefault(require("./api/apiUsed"));
 const godFetch_1 = __importDefault(require("./api/godFetch"));
 const itemFetch_1 = __importDefault(require("./api/itemFetch"));
 const playerFetch_1 = __importDefault(require("./api/playerFetch"));
-const session_1 = require("./api/session");
 const patchUpdater_1 = __importDefault(require("./db/patchUpdater"));
 const articleUpdater_1 = __importDefault(require("./db/articleUpdater"));
+const Api_1 = __importDefault(require("./routes/Api"));
+const SmiteApi_1 = __importDefault(require("./routes/SmiteApi"));
 const app = (0, express_1.default)();
-const router = express_1.default.Router();
 const port = process.env.PORT || 4000;
 const databaseUrl = process.env.dataBaseUrl;
 let currentPatch = null;
@@ -43,19 +39,6 @@ app.use((0, cors_1.default)({
 }));
 mongoose_1.default.set("strictQuery", true);
 mongoose_1.default.connect(databaseUrl);
-router.use((_req, res, next) => {
-    res.header("Access-Control-Allow-Methods", "GET");
-    next();
-});
-router.get("/health", (_req, res) => {
-    const data = {
-        uptime: process.uptime(),
-        message: "Ok",
-        date: new Date(),
-    };
-    res.status(200).send(data);
-});
-app.use("/api", router);
 node_cron_1.default.schedule("0 0 * * *", () => __awaiter(void 0, void 0, void 0, function* () {
     const newPatch = yield (0, patchUpdater_1.default)(currentPatch);
     currentPatch = newPatch;
@@ -69,59 +52,8 @@ app.get("/", (_req, res) => {
         console.error(err);
     }
 });
-app.get("/ping", (_req, res) => {
-    return res.send("pong 🏓");
-});
-app.get("/api", (_req, resp) => {
-    try {
-        resp.json((0, serverPing_1.default)());
-    }
-    catch (error) {
-        console.log(error);
-    }
-    return resp.send("I got a ping from the front end");
-});
-app.get("/smiteapi", (_req, resp) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        resp.json(yield (0, apiPing_1.default)());
-    }
-    catch (error) {
-        console.log(error);
-    }
-}));
-app.get("/createsession", (_req, resp) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        yield (0, createSession_1.default)();
-        resp.json(session_1.session);
-    }
-    catch (error) {
-        console.log(error);
-    }
-}));
-app.get("/testsession", (_req, resp) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        resp.json(yield (0, sessionTest_1.default)());
-    }
-    catch (error) {
-        console.log(error);
-    }
-}));
-app.get("/patchnotes", (_req, resp) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        resp.json(yield (0, patchnotesFetch_1.default)());
-    }
-    catch (err) {
-        console.log(err);
-    }
-}));
-app.get("/getuseddata", (_req, resp) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        resp.json(yield (0, apiUsed_1.default)());
-    }
-    catch (err) {
-        console.error(err);
-    }
-}));
+app.use("/api", Api_1.default);
+app.use("/smiteapi", SmiteApi_1.default);
 app.get("/getgods", (_req, resp) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         console.log("grabbing gods list from db");

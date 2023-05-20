@@ -10,7 +10,6 @@ import GodModel from "./schema/godSchema";
 import ItemModel from "./schema/itemSchema";
 import ArticleModel from "./schema/articleSchema";
 import smiteApiPing from "./api/apiPing";
-import serverPing from "./api/serverPing";
 import sessionTest from "./api/sessionTest";
 import patchnoteFetch from "./api/patchnotesFetch";
 import apiUsed from "./api/apiUsed";
@@ -22,8 +21,11 @@ import { session } from "./api/session";
 import patchUpdater from "./db/patchUpdater";
 import articleUpdater from "./db/articleUpdater";
 
+// Routes
+import apiRouter from "./routes/Api";
+import smiteApiRouter from "./routes/SmiteApi";
+
 const app = express();
-const router = express.Router();
 const port = process.env.PORT || 4000;
 
 const databaseUrl = process.env.dataBaseUrl;
@@ -39,24 +41,6 @@ app.use(
 // to stop mongoose warning of future mongoose update
 mongoose.set("strictQuery", true);
 mongoose.connect(databaseUrl);
-
-//check server health
-router.use((_req, res, next) => {
-  res.header("Access-Control-Allow-Methods", "GET");
-  next();
-});
-
-router.get("/health", (_req, res) => {
-  const data = {
-    uptime: process.uptime(),
-    message: "Ok",
-    date: new Date(),
-  };
-
-  res.status(200).send(data);
-});
-
-app.use("/api", router);
 
 //check if version has changed once every 24 hours, if yes update gods & items, check if any new article released
 cron.schedule("0 0 * * *", async () => {
@@ -81,63 +65,9 @@ app.get("/", (_req, res) => {
   }
 });
 
-app.get("/ping", (_req, res) => {
-  return res.send("pong 🏓");
-});
+app.use("/api", apiRouter);
 
-//server ping, returns timestamp
-app.get("/api", (_req, resp) => {
-  try {
-    resp.json(serverPing());
-  } catch (error) {
-    console.log(error);
-  }
-  return resp.send("I got a ping from the front end");
-});
-
-//ping the smite api
-app.get("/smiteapi", async (_req, resp) => {
-  try {
-    resp.json(await smiteApiPing());
-  } catch (error) {
-    console.log(error);
-  }
-});
-
-//create a session to be able to get more info from smite api
-app.get("/createsession", async (_req, resp) => {
-  try {
-    await createSession();
-
-    resp.json(session);
-  } catch (error) {
-    console.log(error);
-  }
-});
-
-app.get("/testsession", async (_req, resp) => {
-  try {
-    resp.json(await sessionTest());
-  } catch (error) {
-    console.log(error);
-  }
-});
-
-app.get("/patchnotes", async (_req, resp) => {
-  try {
-    resp.json(await patchnoteFetch());
-  } catch (err) {
-    console.log(err);
-  }
-});
-
-app.get("/getuseddata", async (_req, resp) => {
-  try {
-    resp.json(await apiUsed());
-  } catch (err) {
-    console.error(err);
-  }
-});
+app.use("/smiteapi", smiteApiRouter);
 
 app.get("/getgods", async (_req, resp) => {
   try {
