@@ -18,7 +18,6 @@ const mongoose_1 = __importDefault(require("mongoose"));
 const node_cron_1 = __importDefault(require("node-cron"));
 require("dotenv/config");
 const createSession_1 = __importDefault(require("./utils/createSession"));
-const godSchema_1 = __importDefault(require("./schema/godSchema"));
 const itemSchema_1 = __importDefault(require("./schema/itemSchema"));
 const articleSchema_1 = __importDefault(require("./schema/articleSchema"));
 const patchnotesFetch_1 = __importDefault(require("./api/patchnotesFetch"));
@@ -29,6 +28,7 @@ const patchUpdater_1 = __importDefault(require("./db/patchUpdater"));
 const articleUpdater_1 = __importDefault(require("./db/articleUpdater"));
 const Api_1 = __importDefault(require("./routes/Api"));
 const SmiteApi_1 = __importDefault(require("./routes/SmiteApi"));
+const Gods_1 = __importDefault(require("./routes/Gods"));
 const app = (0, express_1.default)();
 const port = process.env.PORT || 4000;
 const databaseUrl = process.env.dataBaseUrl;
@@ -54,35 +54,7 @@ app.get("/", (_req, res) => {
 });
 app.use("/api", Api_1.default);
 app.use("/smiteapi", SmiteApi_1.default);
-app.get("/getgods", (_req, resp) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        console.log("grabbing gods list from db");
-        const gods = yield godSchema_1.default.find().select("Name Pantheon Roles godCard_URL godIcon_URL id");
-        resp.json(gods);
-    }
-    catch (error) {
-        console.log(error);
-    }
-}));
-app.get("/gods/:name", (req, resp) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const godName = req.params.name;
-        const god = yield godSchema_1.default.find({ Name: godName });
-        resp.json(god);
-    }
-    catch (error) {
-        console.error(error);
-    }
-}));
-app.get("/latestgod", (_req, resp) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const god = yield godSchema_1.default.find({ Name: "Ix Chel" });
-        resp.json(god);
-    }
-    catch (error) {
-        console.error(error);
-    }
-}));
+app.use("/gods", Gods_1.default);
 app.get("/getitems", (_req, resp) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         console.log(" grabbing items from db");
@@ -133,16 +105,6 @@ app.get("/devmanualupdate", (_req, resp) => __awaiter(void 0, void 0, void 0, fu
         currentPatch = newPatch;
         console.log("updated patch-", newPatch);
         resp.json("updated database");
-    }
-    catch (err) {
-        console.error(err);
-    }
-}));
-app.get("/devcountgods", (_req, resp) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const godCount = yield godSchema_1.default.where().countDocuments();
-        console.log(godCount);
-        resp.json(godCount);
     }
     catch (err) {
         console.error(err);
