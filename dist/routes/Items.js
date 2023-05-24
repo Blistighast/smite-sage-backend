@@ -13,45 +13,27 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
-const godSchema_1 = __importDefault(require("../schema/godSchema"));
+const itemSchema_1 = __importDefault(require("../schema/itemSchema"));
 const router = express_1.default.Router();
 router.get("/", (_req, resp) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        console.log("grabbing gods list from db");
-        const gods = yield godSchema_1.default.find().select("Name Pantheon Roles godCard_URL godIcon_URL id");
-        resp.json(gods);
-    }
-    catch (error) {
-        console.log(error);
-    }
-}));
-router.get("/latestgod", (_req, resp) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const god = yield godSchema_1.default.find({ Name: "Ix Chel" });
-        resp.json(god);
+        console.log(" grabbing items from db");
+        const items = yield itemSchema_1.default.find().select("ItemId DeviceName ItemTier StartingItem itemIcon_URL Glyph Type Price");
+        resp.json(items);
     }
     catch (error) {
         console.error(error);
     }
 }));
-router.get("/godscount", (_req, resp) => __awaiter(void 0, void 0, void 0, function* () {
+router.get("/:name", (req, resp) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const godCount = yield godSchema_1.default.where().countDocuments();
-        resp.json(godCount);
+        const itemName = req.params.name;
+        const item = yield itemSchema_1.default.find({ DeviceName: itemName });
+        resp.json(item);
     }
     catch (err) {
         console.error(err);
     }
 }));
-router.get("/:name", (req, resp) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const godName = req.params.name;
-        const god = yield godSchema_1.default.find({ Name: godName });
-        resp.json(god);
-    }
-    catch (error) {
-        console.error(error);
-    }
-}));
 exports.default = router;
-//# sourceMappingURL=Gods.js.map
+//# sourceMappingURL=Items.js.map

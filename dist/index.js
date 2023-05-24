@@ -18,7 +18,6 @@ const mongoose_1 = __importDefault(require("mongoose"));
 const node_cron_1 = __importDefault(require("node-cron"));
 require("dotenv/config");
 const createSession_1 = __importDefault(require("./utils/createSession"));
-const itemSchema_1 = __importDefault(require("./schema/itemSchema"));
 const articleSchema_1 = __importDefault(require("./schema/articleSchema"));
 const patchnotesFetch_1 = __importDefault(require("./api/patchnotesFetch"));
 const godFetch_1 = __importDefault(require("./api/godFetch"));
@@ -29,6 +28,7 @@ const articleUpdater_1 = __importDefault(require("./db/articleUpdater"));
 const Api_1 = __importDefault(require("./routes/Api"));
 const SmiteApi_1 = __importDefault(require("./routes/SmiteApi"));
 const Gods_1 = __importDefault(require("./routes/Gods"));
+const Items_1 = __importDefault(require("./routes/Items"));
 const app = (0, express_1.default)();
 const port = process.env.PORT || 4000;
 const databaseUrl = process.env.dataBaseUrl;
@@ -55,26 +55,7 @@ app.get("/", (_req, res) => {
 app.use("/api", Api_1.default);
 app.use("/smiteapi", SmiteApi_1.default);
 app.use("/gods", Gods_1.default);
-app.get("/getitems", (_req, resp) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        console.log(" grabbing items from db");
-        const items = yield itemSchema_1.default.find().select("ItemId DeviceName ItemTier StartingItem itemIcon_URL Glyph Type Price");
-        resp.json(items);
-    }
-    catch (error) {
-        console.error(error);
-    }
-}));
-app.get("/items/:name", (req, resp) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const itemName = req.params.name;
-        const item = yield itemSchema_1.default.find({ DeviceName: itemName });
-        resp.json(item);
-    }
-    catch (err) {
-        console.error(err);
-    }
-}));
+app.use("/items", Items_1.default);
 app.get("/article/:type", (req, resp) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const articleType = req.params.type;

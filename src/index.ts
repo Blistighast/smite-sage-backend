@@ -6,18 +6,12 @@ import "dotenv/config";
 
 //custom functions
 import createSession from "./utils/createSession";
-import GodModel from "./schema/godSchema";
-import ItemModel from "./schema/itemSchema";
 import ArticleModel from "./schema/articleSchema";
-import smiteApiPing from "./api/apiPing";
-import sessionTest from "./api/sessionTest";
 import patchnoteFetch from "./api/patchnotesFetch";
-import apiUsed from "./api/apiUsed";
 import godFetch from "./api/godFetch";
 import itemFetch from "./api/itemFetch";
 import playerFetch from "./api/playerFetch";
 
-import { session } from "./api/session";
 import patchUpdater from "./db/patchUpdater";
 import articleUpdater from "./db/articleUpdater";
 
@@ -25,6 +19,7 @@ import articleUpdater from "./db/articleUpdater";
 import apiRouter from "./routes/Api";
 import smiteApiRouter from "./routes/SmiteApi";
 import godsRouter from "./routes/Gods";
+import itemsRouter from "./routes/Items";
 
 const app = express();
 const port = process.env.PORT || 4000;
@@ -72,27 +67,7 @@ app.use("/smiteapi", smiteApiRouter);
 
 app.use("/gods", godsRouter);
 
-app.get("/getitems", async (_req, resp) => {
-  try {
-    console.log(" grabbing items from db");
-    const items = await ItemModel.find().select(
-      "ItemId DeviceName ItemTier StartingItem itemIcon_URL Glyph Type Price"
-    );
-    resp.json(items);
-  } catch (error) {
-    console.error(error);
-  }
-});
-
-app.get("/items/:name", async (req, resp) => {
-  try {
-    const itemName = req.params.name;
-    const item = await ItemModel.find({ DeviceName: itemName });
-    resp.json(item);
-  } catch (err) {
-    console.error(err);
-  }
-});
+app.use("/items", itemsRouter);
 
 app.get("/article/:type", async (req, resp) => {
   try {
