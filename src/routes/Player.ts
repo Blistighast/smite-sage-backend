@@ -1,0 +1,16 @@
+import express from "express";
+
+import playerFetch from "../api/playerFetch";
+
+const router = express.Router();
+
+router.get("/:playername", async (req, resp) => {
+  try {
+    const player = await playerFetch(req.params.playername);
+    resp.json(player);
+  } catch (err) {
+    console.error(err);
+  }
+});
+
+export default router;

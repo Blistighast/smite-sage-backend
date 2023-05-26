@@ -22,13 +22,13 @@ const articleSchema_1 = __importDefault(require("./schema/articleSchema"));
 const patchnotesFetch_1 = __importDefault(require("./api/patchnotesFetch"));
 const godFetch_1 = __importDefault(require("./api/godFetch"));
 const itemFetch_1 = __importDefault(require("./api/itemFetch"));
-const playerFetch_1 = __importDefault(require("./api/playerFetch"));
 const patchUpdater_1 = __importDefault(require("./db/patchUpdater"));
 const articleUpdater_1 = __importDefault(require("./db/articleUpdater"));
 const Api_1 = __importDefault(require("./routes/Api"));
 const SmiteApi_1 = __importDefault(require("./routes/SmiteApi"));
 const Gods_1 = __importDefault(require("./routes/Gods"));
 const Items_1 = __importDefault(require("./routes/Items"));
+const Player_1 = __importDefault(require("./routes/Player"));
 const app = (0, express_1.default)();
 const port = process.env.PORT || 4000;
 const databaseUrl = process.env.dataBaseUrl;
@@ -56,6 +56,7 @@ app.use("/api", Api_1.default);
 app.use("/smiteapi", SmiteApi_1.default);
 app.use("/gods", Gods_1.default);
 app.use("/items", Items_1.default);
+app.use("/player", Player_1.default);
 app.get("/article/:type", (req, resp) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const articleType = req.params.type;
@@ -63,15 +64,6 @@ app.get("/article/:type", (req, resp) => __awaiter(void 0, void 0, void 0, funct
             .sort({ datePosted: -1 })
             .limit(1);
         resp.json(article);
-    }
-    catch (err) {
-        console.error(err);
-    }
-}));
-app.get("/getplayer/:playername", (req, resp) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const player = yield (0, playerFetch_1.default)(req.params.playername);
-        resp.json(player);
     }
     catch (err) {
         console.error(err);

@@ -20,6 +20,7 @@ import apiRouter from "./routes/Api";
 import smiteApiRouter from "./routes/SmiteApi";
 import godsRouter from "./routes/Gods";
 import itemsRouter from "./routes/Items";
+import playerRouter from "./routes/Player";
 
 const app = express();
 const port = process.env.PORT || 4000;
@@ -69,6 +70,8 @@ app.use("/gods", godsRouter);
 
 app.use("/items", itemsRouter);
 
+app.use("/player", playerRouter);
+
 app.get("/article/:type", async (req, resp) => {
   try {
     const articleType = req.params.type;
@@ -76,15 +79,6 @@ app.get("/article/:type", async (req, resp) => {
       .sort({ datePosted: -1 })
       .limit(1);
     resp.json(article);
-  } catch (err) {
-    console.error(err);
-  }
-});
-
-app.get("/getplayer/:playername", async (req, resp) => {
-  try {
-    const player = await playerFetch(req.params.playername);
-    resp.json(player);
   } catch (err) {
     console.error(err);
   }
