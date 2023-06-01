@@ -4,6 +4,7 @@ import GodModel from "../schema/godSchema";
 
 const router = express.Router();
 
+//returns all gods
 router.get("/", async (_req, resp) => {
   try {
     console.log("grabbing gods list from db");
@@ -16,6 +17,7 @@ router.get("/", async (_req, resp) => {
   }
 });
 
+//returns latest god
 router.get("/latestgod", async (_req, resp) => {
   try {
     //swap to this when new god comes in
@@ -27,6 +29,7 @@ router.get("/latestgod", async (_req, resp) => {
   }
 });
 
+//returns amount of gods
 router.get("/godscount", async (_req, resp) => {
   try {
     const godCount = await GodModel.where().countDocuments();
@@ -36,6 +39,7 @@ router.get("/godscount", async (_req, resp) => {
   }
 });
 
+//returns specific god
 router.get("/:name", async (req, resp) => {
   try {
     const godName = req.params.name;

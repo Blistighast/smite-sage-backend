@@ -4,6 +4,7 @@ import ItemModel from "../schema/itemSchema";
 
 const router = express.Router();
 
+//returns all items
 router.get("/", async (_req, resp) => {
   try {
     console.log(" grabbing items from db");
@@ -16,6 +17,7 @@ router.get("/", async (_req, resp) => {
   }
 });
 
+//returns specific item
 router.get("/:name", async (req, resp) => {
   try {
     const itemName = req.params.name;

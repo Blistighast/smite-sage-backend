@@ -75,18 +75,7 @@ app.use("/player", playerRouter);
 
 app.use("/article", articleRouter);
 
-// app.get("/article/:type", async (req, resp) => {
-//   try {
-//     const articleType = req.params.type;
-//     const article = await ArticleModel.find({ type: articleType })
-//       .sort({ datePosted: -1 })
-//       .limit(1);
-//     resp.json(article);
-//   } catch (err) {
-//     console.error(err);
-//   }
-// });
-
+//updates db
 app.get("/devmanualupdate", async (_req, resp) => {
   try {
     await createSession();
@@ -101,11 +90,3 @@ app.get("/devmanualupdate", async (_req, resp) => {
     console.error(err);
   }
 });
-
-// app.get("/checkscraper", async (_req, res) => {
-//   try {
-//     res.json(await articleUpdater());
-//   } catch (err) {
-//     console.error(err);
-//   }
-// });

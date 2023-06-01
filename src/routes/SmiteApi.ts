@@ -30,6 +30,7 @@ router.get("/createsession", async (_req, resp) => {
   }
 });
 
+//returns if there is currently a session
 router.get("/testsession", async (_req, resp) => {
   try {
     resp.json(await sessionTest());
@@ -38,6 +39,7 @@ router.get("/testsession", async (_req, resp) => {
   }
 });
 
+//returns current patch version
 router.get("/patchnotes", async (_req, resp) => {
   try {
     resp.json(await patchnoteFetch());
@@ -46,6 +48,7 @@ router.get("/patchnotes", async (_req, resp) => {
   }
 });
 
+//returns current daily data usage
 router.get("/getuseddata", async (_req, resp) => {
   try {
     resp.json(await apiUsed());

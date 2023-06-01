@@ -19,10 +19,12 @@ router.get("/", (_req, resp) => {
   }
 });
 
+//server ping display for checking
 router.get("/ping", (_req, res) => {
   return res.send("pong 🏓");
 });
 
+//returns server health
 router.get("/health", (_req, res) => {
   const data = {
     uptime: process.uptime(),

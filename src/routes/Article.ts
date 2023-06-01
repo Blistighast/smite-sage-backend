@@ -6,6 +6,7 @@ import articleUpdater from "../db/articleUpdater";
 
 const router = express.Router();
 
+//returns latest article type from db
 router.get("/:type", async (req, resp) => {
   try {
     const articleType = req.params.type;
@@ -18,6 +19,7 @@ router.get("/:type", async (req, resp) => {
   }
 });
 
+//dev check , scrapes and returns articles from db
 router.get("/checkscraper", async (_req, res) => {
   try {
     res.json(await articleUpdater());
