@@ -19,8 +19,6 @@ const node_cron_1 = __importDefault(require("node-cron"));
 require("dotenv/config");
 const createSession_1 = __importDefault(require("./utils/createSession"));
 const patchnotesFetch_1 = __importDefault(require("./api/patchnotesFetch"));
-const godFetch_1 = __importDefault(require("./api/godFetch"));
-const itemFetch_1 = __importDefault(require("./api/itemFetch"));
 const patchUpdater_1 = __importDefault(require("./db/patchUpdater"));
 const articleUpdater_1 = __importDefault(require("./db/articleUpdater"));
 const Api_1 = __importDefault(require("./routes/Api"));
@@ -62,11 +60,8 @@ app.get("/devmanualupdate", (_req, resp) => __awaiter(void 0, void 0, void 0, fu
     try {
         yield (0, createSession_1.default)();
         const newPatch = yield (0, patchnotesFetch_1.default)();
-        yield (0, godFetch_1.default)();
-        yield (0, itemFetch_1.default)();
-        currentPatch = newPatch;
         console.log("updated patch-", newPatch);
-        resp.json("updated database");
+        resp.json(newPatch);
     }
     catch (err) {
         console.error(err);

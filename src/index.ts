@@ -6,11 +6,9 @@ import "dotenv/config";
 
 //custom functions
 import createSession from "./utils/createSession";
-import ArticleModel from "./schema/articleSchema";
 import patchnoteFetch from "./api/patchnotesFetch";
 import godFetch from "./api/godFetch";
 import itemFetch from "./api/itemFetch";
-import playerFetch from "./api/playerFetch";
 
 import patchUpdater from "./db/patchUpdater";
 import articleUpdater from "./db/articleUpdater";
@@ -80,12 +78,12 @@ app.get("/devmanualupdate", async (_req, resp) => {
   try {
     await createSession();
     const newPatch = await patchnoteFetch();
-    await godFetch();
-    await itemFetch();
+    // await godFetch();
+    // await itemFetch();
 
-    currentPatch = newPatch;
+    // currentPatch = newPatch;
     console.log("updated patch-", newPatch);
-    resp.json("updated database");
+    resp.json(newPatch);
   } catch (err) {
     console.error(err);
   }
