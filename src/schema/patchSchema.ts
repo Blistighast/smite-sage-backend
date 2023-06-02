@@ -2,7 +2,6 @@ import mongoose from "mongoose";
 
 const patchSchema = new mongoose.Schema({
   version: String,
-  newGod: String,
 });
 
 // generate createdAt and updatedAt
