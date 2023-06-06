@@ -16,13 +16,13 @@ const node_fetch_1 = __importDefault(require("node-fetch"));
 const luxon_1 = require("luxon");
 require("dotenv/config");
 const createSignature_1 = __importDefault(require("../utils/createSignature"));
+const createSession_1 = __importDefault(require("../utils/createSession"));
 const session_1 = require("./session");
 const apiUrl = process.env.apiUrl;
 const devId = process.env.devId;
 const patchnoteFetch = () => __awaiter(void 0, void 0, void 0, function* () {
     if (!session_1.session) {
-        console.log("make session");
-        return { errorMessage: "You need to make a session first" };
+        yield (0, createSession_1.default)();
     }
     const timestamp = luxon_1.DateTime.utc().toFormat("yyyyMMddHHmmss");
     const signature = (0, createSignature_1.default)("getpatchinfo", timestamp);
