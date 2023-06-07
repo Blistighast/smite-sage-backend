@@ -2,6 +2,7 @@ import fetch from "node-fetch";
 import { DateTime } from "luxon";
 import "dotenv/config";
 
+import PatchModel from "../schema/patchSchema";
 import createSignature from "../utils/createSignature";
 import createSession from "../utils/createSession";
 import { session } from "./session";
@@ -18,7 +19,11 @@ const patchnoteFetch = async () => {
   const patchNotesUrl = `${apiUrl}/getpatchinfojson/${devId}/${signature}/${session}/${timestamp}`;
   const patchNoteResp = await fetch(patchNotesUrl);
   const data = await patchNoteResp.json();
-  return data.version_string;
+  await PatchModel.create({ version: data.version_string });
+  const latestSavedPatch = await PatchModel.find()
+    .sort({ createdAt: -1 })
+    .limit(1);
+  return latestSavedPatch;
 };
 
 export default patchnoteFetch;

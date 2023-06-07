@@ -60,7 +60,7 @@ app.get("/devmanualupdate", (_req, resp) => __awaiter(void 0, void 0, void 0, fu
     try {
         yield (0, createSession_1.default)();
         const newPatch = yield (0, patchnotesFetch_1.default)();
-        console.log("updated patch-", newPatch);
+        console.log("saved patch-", newPatch);
         resp.json(newPatch);
     }
     catch (err) {

@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const node_fetch_1 = __importDefault(require("node-fetch"));
 const luxon_1 = require("luxon");
 require("dotenv/config");
+const patchSchema_1 = __importDefault(require("../schema/patchSchema"));
 const createSignature_1 = __importDefault(require("../utils/createSignature"));
 const createSession_1 = __importDefault(require("../utils/createSession"));
 const session_1 = require("./session");
@@ -29,7 +30,11 @@ const patchnoteFetch = () => __awaiter(void 0, void 0, void 0, function* () {
     const patchNotesUrl = `${apiUrl}/getpatchinfojson/${devId}/${signature}/${session_1.session}/${timestamp}`;
     const patchNoteResp = yield (0, node_fetch_1.default)(patchNotesUrl);
     const data = yield patchNoteResp.json();
-    return data.version_string;
+    yield patchSchema_1.default.create({ version: data.version_string });
+    const latestSavedPatch = yield patchSchema_1.default.find()
+        .sort({ createdAt: -1 })
+        .limit(1);
+    return latestSavedPatch;
 });
 exports.default = patchnoteFetch;
 //# sourceMappingURL=patchnotesFetch.js.map
