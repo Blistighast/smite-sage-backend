@@ -14,16 +14,26 @@ const patchnoteFetch = async () => {
   if (!session) {
     await createSession();
   }
+
+  const latestSavedPatch = await PatchModel.find()
+    .sort({ createdAt: -1 })
+    .limit(1);
+
   const timestamp = DateTime.utc().toFormat("yyyyMMddHHmmss");
   const signature = createSignature("getpatchinfo", timestamp);
   const patchNotesUrl = `${apiUrl}/getpatchinfojson/${devId}/${signature}/${session}/${timestamp}`;
   const patchNoteResp = await fetch(patchNotesUrl);
   const data = await patchNoteResp.json();
+
+  if (latestSavedPatch[0].version === data.version_string) {
+    console.log(
+      `no new patch, staying on patch ${latestSavedPatch[0].version}`
+    );
+    return data.version_string;
+  }
+
   await PatchModel.create({ version: data.version_string });
-  const latestSavedPatch = await PatchModel.find()
-    .sort({ createdAt: -1 })
-    .limit(1);
-  return latestSavedPatch;
+  return data.version_string;
 };
 
 export default patchnoteFetch;
