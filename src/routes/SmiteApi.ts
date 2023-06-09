@@ -57,4 +57,20 @@ router.get("/getuseddata", async (_req, resp) => {
   }
 });
 
+//updates db
+router.get("/devmanualupdate", async (_req, resp) => {
+  try {
+    await createSession();
+    const newPatch = await patchnoteFetch();
+    // await godFetch();
+    // await itemFetch();
+
+    // console.log("updated patch-", newPatch);
+    console.log("saved patch-", newPatch);
+    resp.json(newPatch);
+  } catch (err) {
+    console.error(err);
+  }
+});
+
 export default router;

@@ -61,5 +61,16 @@ router.get("/getuseddata", (_req, resp) => __awaiter(void 0, void 0, void 0, fun
         console.error(err);
     }
 }));
+router.get("/devmanualupdate", (_req, resp) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        yield (0, createSession_1.default)();
+        const newPatch = yield (0, patchnotesFetch_1.default)();
+        console.log("saved patch-", newPatch);
+        resp.json(newPatch);
+    }
+    catch (err) {
+        console.error(err);
+    }
+}));
 exports.default = router;
 //# sourceMappingURL=SmiteApi.js.map
