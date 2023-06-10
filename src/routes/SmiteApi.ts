@@ -65,7 +65,6 @@ router.get("/devmanualupdate", async (_req, resp) => {
     // await godFetch();
     // await itemFetch();
 
-    // console.log("updated patch-", newPatch);
     console.log("saved patch-", newPatch);
     resp.json(newPatch);
   } catch (err) {

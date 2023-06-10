@@ -81,8 +81,6 @@ app.get("/devmanualupdate", async (_req, resp) => {
     // await godFetch();
     // await itemFetch();
 
-    // currentPatch = newPatch;
-    // console.log("updated patch-", newPatch);
     console.log("saved patch-", newPatch);
     resp.json(newPatch);
   } catch (err) {
