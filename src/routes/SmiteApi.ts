@@ -59,7 +59,7 @@ router.get("/getuseddata", async (_req, resp) => {
 });
 
 //updates db
-router.get("/devmanualupdate", async (_req, resp) => {
+router.get("/manualdbupdate", async (_req, resp) => {
   try {
     const newPatch = await patchUpdater();
     resp.json(newPatch);

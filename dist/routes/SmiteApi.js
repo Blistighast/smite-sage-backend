@@ -62,7 +62,7 @@ router.get("/getuseddata", (_req, resp) => __awaiter(void 0, void 0, void 0, fun
         console.error(err);
     }
 }));
-router.get("/devmanualupdate", (_req, resp) => __awaiter(void 0, void 0, void 0, function* () {
+router.get("/manualdbupdate", (_req, resp) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const newPatch = yield (0, patchUpdater_1.default)();
         resp.json(newPatch);
