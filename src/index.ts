@@ -7,8 +7,6 @@ import "dotenv/config";
 //custom functions
 import createSession from "./utils/createSession";
 import patchnoteFetch from "./api/patchnotesFetch";
-import godFetch from "./api/godFetch";
-import itemFetch from "./api/itemFetch";
 
 import patchUpdater from "./db/patchUpdater";
 import articleUpdater from "./db/articleUpdater";
@@ -25,7 +23,6 @@ const app = express();
 const port = process.env.PORT || 4000;
 
 const databaseUrl = process.env.dataBaseUrl;
-let currentPatch = null;
 
 app.listen(port, () => console.log(`listening on port ${port}`));
 app.use(
@@ -40,17 +37,13 @@ mongoose.connect(databaseUrl);
 
 //check if version has changed once every 24 hours, if yes update gods & items, check if any new article released
 cron.schedule("0 0 * * *", async () => {
-  const newPatch = await patchUpdater(currentPatch);
-  currentPatch = newPatch;
-
+  await patchUpdater();
   await articleUpdater();
 });
 
 // setInterval(async () => {
-//   const newPatch = await patchUpdater(currentPatch);
-//   currentPatch = newPatch;
-
-//   await articleUpdater();
+// await patchUpdater();
+// await articleUpdater();
 // }, 1000 * 60 * 60 * 24);
 
 app.get("/", (_req, res) => {
@@ -74,16 +67,16 @@ app.use("/player", playerRouter);
 app.use("/article", articleRouter);
 
 //updates db
-app.get("/devmanualupdate", async (_req, resp) => {
-  try {
-    await createSession();
-    const newPatch = await patchnoteFetch();
-    // await godFetch();
-    // await itemFetch();
+// app.get("/devmanualupdate", async (_req, resp) => {
+//   try {
+//     await createSession();
+//     const newPatch = await patchnoteFetch();
+//     // await godFetch();
+//     // await itemFetch();
 
-    console.log("saved patch-", newPatch);
-    resp.json(newPatch);
-  } catch (err) {
-    console.error(err);
-  }
-});
+//     console.log("saved patch-", newPatch);
+//     resp.json(newPatch);
+//   } catch (err) {
+//     console.error(err);
+//   }
+// });

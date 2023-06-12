@@ -18,6 +18,7 @@ const apiPing_1 = __importDefault(require("../api/apiPing"));
 const sessionTest_1 = __importDefault(require("../api/sessionTest"));
 const apiUsed_1 = __importDefault(require("../api/apiUsed"));
 const patchnotesFetch_1 = __importDefault(require("../api/patchnotesFetch"));
+const patchUpdater_1 = __importDefault(require("../db/patchUpdater"));
 const session_1 = require("../api/session");
 const router = express_1.default.Router();
 router.get("/", (_req, resp) => __awaiter(void 0, void 0, void 0, function* () {
@@ -63,9 +64,7 @@ router.get("/getuseddata", (_req, resp) => __awaiter(void 0, void 0, void 0, fun
 }));
 router.get("/devmanualupdate", (_req, resp) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        yield (0, createSession_1.default)();
-        const newPatch = yield (0, patchnotesFetch_1.default)();
-        console.log("saved patch-", newPatch);
+        const newPatch = yield (0, patchUpdater_1.default)();
         resp.json(newPatch);
     }
     catch (err) {

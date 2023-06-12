@@ -5,6 +5,7 @@ import smiteApiPing from "../api/apiPing";
 import sessionTest from "../api/sessionTest";
 import apiUsed from "../api/apiUsed";
 import patchnoteFetch from "../api/patchnotesFetch";
+import patchUpdater from "../db/patchUpdater";
 
 import { session } from "../api/session";
 
@@ -60,12 +61,7 @@ router.get("/getuseddata", async (_req, resp) => {
 //updates db
 router.get("/devmanualupdate", async (_req, resp) => {
   try {
-    await createSession();
-    const newPatch = await patchnoteFetch();
-    // await godFetch();
-    // await itemFetch();
-
-    console.log("saved patch-", newPatch);
+    const newPatch = await patchUpdater();
     resp.json(newPatch);
   } catch (err) {
     console.error(err);

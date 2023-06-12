@@ -15,16 +15,22 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const godFetch_1 = __importDefault(require("../api/godFetch"));
 const itemFetch_1 = __importDefault(require("../api/itemFetch"));
 const patchnotesFetch_1 = __importDefault(require("../api/patchnotesFetch"));
-const createSession_1 = __importDefault(require("../utils/createSession"));
-const patchUpdater = (currentPatch) => __awaiter(void 0, void 0, void 0, function* () {
+const patchSchema_1 = __importDefault(require("../schema/patchSchema"));
+const patchUpdater = () => __awaiter(void 0, void 0, void 0, function* () {
     console.log("checking for version number change");
-    yield (0, createSession_1.default)();
+    const latestSavedPatch = yield patchSchema_1.default.find()
+        .sort({ createdAt: -1 })
+        .limit(1);
     const newPatch = yield (0, patchnotesFetch_1.default)();
-    console.log("current patch-", currentPatch, "updated patch-", newPatch);
-    if (newPatch !== currentPatch) {
-        yield (0, godFetch_1.default)();
-        yield (0, itemFetch_1.default)();
+    console.log("dbPatch-", latestSavedPatch, "newPatch-", newPatch);
+    if (latestSavedPatch[0].version === newPatch) {
+        console.log(`no new patch, staying on patch ${latestSavedPatch[0].version}`);
+        return newPatch;
     }
+    yield patchSchema_1.default.create({ version: newPatch });
+    yield (0, godFetch_1.default)();
+    yield (0, itemFetch_1.default)();
+    console.log(`updated version to ${newPatch}`);
     return newPatch;
 });
 exports.default = patchUpdater;

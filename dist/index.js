@@ -17,8 +17,6 @@ const cors_1 = __importDefault(require("cors"));
 const mongoose_1 = __importDefault(require("mongoose"));
 const node_cron_1 = __importDefault(require("node-cron"));
 require("dotenv/config");
-const createSession_1 = __importDefault(require("./utils/createSession"));
-const patchnotesFetch_1 = __importDefault(require("./api/patchnotesFetch"));
 const patchUpdater_1 = __importDefault(require("./db/patchUpdater"));
 const articleUpdater_1 = __importDefault(require("./db/articleUpdater"));
 const Api_1 = __importDefault(require("./routes/Api"));
@@ -30,7 +28,6 @@ const Article_1 = __importDefault(require("./routes/Article"));
 const app = (0, express_1.default)();
 const port = process.env.PORT || 4000;
 const databaseUrl = process.env.dataBaseUrl;
-let currentPatch = null;
 app.listen(port, () => console.log(`listening on port ${port}`));
 app.use((0, cors_1.default)({
     origin: [process.env.frontendUrl || "http://localhost:3000"],
@@ -38,8 +35,7 @@ app.use((0, cors_1.default)({
 mongoose_1.default.set("strictQuery", true);
 mongoose_1.default.connect(databaseUrl);
 node_cron_1.default.schedule("0 0 * * *", () => __awaiter(void 0, void 0, void 0, function* () {
-    const newPatch = yield (0, patchUpdater_1.default)(currentPatch);
-    currentPatch = newPatch;
+    yield (0, patchUpdater_1.default)();
     yield (0, articleUpdater_1.default)();
 }));
 app.get("/", (_req, res) => {
@@ -56,15 +52,4 @@ app.use("/gods", Gods_1.default);
 app.use("/items", Items_1.default);
 app.use("/player", Player_1.default);
 app.use("/article", Article_1.default);
-app.get("/devmanualupdate", (_req, resp) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        yield (0, createSession_1.default)();
-        const newPatch = yield (0, patchnotesFetch_1.default)();
-        console.log("saved patch-", newPatch);
-        resp.json(newPatch);
-    }
-    catch (err) {
-        console.error(err);
-    }
-}));
 //# sourceMappingURL=index.js.map
