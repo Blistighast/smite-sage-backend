@@ -15,7 +15,24 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const articleSchema_1 = __importDefault(require("../schema/articleSchema"));
 const articleUpdater_1 = __importDefault(require("../db/articleUpdater"));
+const webScraper_1 = __importDefault(require("../utils/webScraper"));
 const router = express_1.default.Router();
+router.get("/checkscraper", (_req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        res.json(yield (0, webScraper_1.default)());
+    }
+    catch (err) {
+        console.error(err);
+    }
+}));
+router.get("/articleupdate", (_req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        res.json(yield (0, articleUpdater_1.default)());
+    }
+    catch (err) {
+        console.error(err);
+    }
+}));
 router.get("/:type", (req, resp) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const articleType = req.params.type;
@@ -23,14 +40,6 @@ router.get("/:type", (req, resp) => __awaiter(void 0, void 0, void 0, function* 
             .sort({ datePosted: -1 })
             .limit(1);
         resp.json(article);
-    }
-    catch (err) {
-        console.error(err);
-    }
-}));
-router.get("/checkscraper", (_req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        res.json(yield (0, articleUpdater_1.default)());
     }
     catch (err) {
         console.error(err);
