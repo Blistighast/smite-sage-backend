@@ -1,15 +1,7 @@
 import express from "express";
 import cors from "cors";
 import mongoose from "mongoose";
-import cron from "node-cron";
 import "dotenv/config";
-
-//custom functions
-import createSession from "./utils/createSession";
-import patchnoteFetch from "./api/patchnotesFetch";
-
-import patchUpdater from "./db/patchUpdater";
-import articleUpdater from "./db/articleUpdater";
 
 // Routes
 import apiRouter from "./routes/Api";
@@ -36,10 +28,10 @@ mongoose.set("strictQuery", true);
 mongoose.connect(databaseUrl);
 
 //check if version has changed once every 24 hours, if yes update gods & items, check if any new article released
-cron.schedule("0 0 * * *", async () => {
-  await patchUpdater();
-  await articleUpdater();
-});
+// cron.schedule("0 0 * * *", async () => {
+//   await patchUpdater();
+//   await articleUpdater();
+// });
 
 // setInterval(async () => {
 // await patchUpdater();
