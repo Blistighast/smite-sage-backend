@@ -27,17 +27,6 @@ app.use(
 mongoose.set("strictQuery", true);
 mongoose.connect(databaseUrl);
 
-//check if version has changed once every 24 hours, if yes update gods & items, check if any new article released
-// cron.schedule("0 0 * * *", async () => {
-//   await patchUpdater();
-//   await articleUpdater();
-// });
-
-// setInterval(async () => {
-// await patchUpdater();
-// await articleUpdater();
-// }, 1000 * 60 * 60 * 24);
-
 app.get("/", (_req, res) => {
   try {
     res.send("Smite Sage API");
@@ -57,18 +46,3 @@ app.use("/items", itemsRouter);
 app.use("/player", playerRouter);
 
 app.use("/article", articleRouter);
-
-//updates db
-// app.get("/devmanualupdate", async (_req, resp) => {
-//   try {
-//     await createSession();
-//     const newPatch = await patchnoteFetch();
-//     // await godFetch();
-//     // await itemFetch();
-
-//     console.log("saved patch-", newPatch);
-//     resp.json(newPatch);
-//   } catch (err) {
-//     console.error(err);
-//   }
-// });
