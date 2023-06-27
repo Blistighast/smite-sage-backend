@@ -1,6 +1,7 @@
 import express from "express";
 
 import GodModel from "../schema/godSchema";
+import recommendedItemFetch from "../api/recommendedItemsFetch";
 
 const router = express.Router();
 
@@ -34,6 +35,16 @@ router.get("/godscount", async (_req, resp) => {
   try {
     const godCount = await GodModel.where().countDocuments();
     resp.json(godCount);
+  } catch (err) {
+    console.error(err);
+  }
+});
+
+router.get("/recommendeditems/:godid", async (req, resp) => {
+  try {
+    const recommendedItems = await recommendedItemFetch(req.params.godid);
+    console.log(recommendedItems);
+    resp.json(recommendedItems);
   } catch (err) {
     console.error(err);
   }

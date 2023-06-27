@@ -14,6 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const godSchema_1 = __importDefault(require("../schema/godSchema"));
+const recommendedItemsFetch_1 = __importDefault(require("../api/recommendedItemsFetch"));
 const router = express_1.default.Router();
 router.get("/", (_req, resp) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -38,6 +39,16 @@ router.get("/godscount", (_req, resp) => __awaiter(void 0, void 0, void 0, funct
     try {
         const godCount = yield godSchema_1.default.where().countDocuments();
         resp.json(godCount);
+    }
+    catch (err) {
+        console.error(err);
+    }
+}));
+router.get("/recommendeditems/:godid", (req, resp) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const recommendedItems = yield (0, recommendedItemsFetch_1.default)(req.params.godid);
+        console.log(recommendedItems);
+        resp.json(recommendedItems);
     }
     catch (err) {
         console.error(err);
