@@ -46,5 +46,3 @@ app.use("/items", itemsRouter);
 app.use("/player", playerRouter);
 
 app.use("/article", articleRouter);
-
-//testing git
