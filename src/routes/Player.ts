@@ -7,7 +7,7 @@ const router = express.Router();
 //returns specific player
 router.get("/:playername", async (req, resp) => {
   try {
-    const player = await playerFetch(req.params.playername.replace(":", ""));
+    const player = await playerFetch(req.params.playername);
     resp.json(player);
   } catch (err) {
     console.error(err);

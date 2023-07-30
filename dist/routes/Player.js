@@ -17,7 +17,7 @@ const playerFetch_1 = __importDefault(require("../api/playerFetch"));
 const router = express_1.default.Router();
 router.get("/:playername", (req, resp) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const player = yield (0, playerFetch_1.default)(req.params.playername.replace(":", ""));
+        const player = yield (0, playerFetch_1.default)(req.params.playername);
         resp.json(player);
     }
     catch (err) {
