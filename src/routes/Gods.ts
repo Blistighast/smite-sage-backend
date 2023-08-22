@@ -22,8 +22,8 @@ router.get("/", async (_req, resp) => {
 router.get("/latestgod", async (_req, resp) => {
   try {
     //swap to this when new god comes in
-    // const gods = await GodModel.find().sort({ createdAt: -1 }).limit(2);
-    const god = await GodModel.find({ Name: "Ix Chel" }); //temp until new god with createdAt is added
+    // const gods = await GodModel.find().sort({ createdAt: -1 }).limit(2); // latest 2 gods
+    const god = await GodModel.find().sort({ createdAt: -1 }).limit(1);
     resp.json(god);
   } catch (error) {
     console.error(error);
