@@ -20,6 +20,7 @@ app.listen(port, () => console.log(`listening on port ${port}`));
 app.use(
   cors({
     origin: [process.env.frontendUrl || "http://localhost:3000"],
+    optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
   })
 );
 
