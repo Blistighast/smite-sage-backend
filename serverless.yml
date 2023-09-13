@@ -9,7 +9,7 @@ provider:
   memorySize: 512
   usagePlan: # limit monthly invocations
     quota:
-      limit: 10000
+      limit: 100000
       offset: 2
       period: MONTH
     throttle:
