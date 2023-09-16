@@ -1,5 +1,6 @@
 service: smite-sage-backend
 frameworkVersion: "3"
+useDotenv: true
 
 provider:
   name: aws
