@@ -10,6 +10,7 @@
     "add-build": "git add dist",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "pre-commit": ["ts.check", "build", "add-build"],
   "author": "Brian Guterl",
   "license": "ISC",
   "dependencies": {
