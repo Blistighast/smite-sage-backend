@@ -6,7 +6,7 @@
   "scripts": {
     "start": "nodemon src/index.ts",
     "build": "rimraf dist && tsc",
-    "offline": "sls offline start --skipCacheInvalidation",
+    "offline": "sls offline start",
     "ts.check": "tsc --project tsconfig.json",
     "add-build": "git add dist",
     "test": "echo \"Error: no test specified\" && exit 1"
