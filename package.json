@@ -6,6 +6,7 @@
   "scripts": {
     "start": "nodemon src/index.ts",
     "build": "rimraf dist && tsc",
+    "deploy": "sls deploy",
     "offline": "sls offline start",
     "ts.check": "tsc --project tsconfig.json",
     "add-build": "git add dist",
