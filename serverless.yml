@@ -8,18 +8,18 @@ provider:
   stage: dev
   region: us-east-1
   memorySize: 512
-  usagePlan: # limit monthly invocations
-    quota:
-      limit: 100000
-      offset: 2
-      period: MONTH
-    throttle:
-      burstLimit: 200
-      rateLimit: 100
+  # usagePlan: # limit monthly invocations
+  #   quota:
+  #     limit: 100000
+  #     offset: 2
+  #     period: MONTH
+  #   throttle:
+  #     burstLimit: 200
+  #     rateLimit: 100
 
 functions:
   app:
-    handler: server.handler
+    handler: src/index.handler
     events:
       - http:
           path: /

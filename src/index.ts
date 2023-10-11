@@ -17,7 +17,7 @@ const port = process.env.PORT || 4000;
 
 const databaseUrl = process.env.dataBaseUrl;
 
-app.listen(port, () => console.log(`listening on port ${port}`));
+// app.listen(port, () => console.log(`listening on port ${port}`));
 app.use(
   cors({
     origin: [process.env.frontendUrl || "http://localhost:3000"],

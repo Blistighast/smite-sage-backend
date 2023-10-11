@@ -5,3 +5,4 @@ keystone.db
 *.log
 .env
 .csv
+.build
