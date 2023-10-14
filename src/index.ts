@@ -49,6 +49,4 @@ app.use("/player", playerRouter);
 
 app.use("/article", articleRouter);
 
-// export default serverless(app);
-
 module.exports.handler = serverless(app);
