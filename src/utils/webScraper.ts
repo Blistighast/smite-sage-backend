@@ -1,7 +1,9 @@
 // import puppeteer from "puppeteer";
 import puppeteer from "puppeteer-core";
 import chromium from "@sparticuz/chromium";
+
 import getDateFromTimeAgo from "./getDateFromTimeAgo";
+import "dotenv/config";
 
 let retry = 0;
 let maxRetries = 5;
@@ -22,11 +24,19 @@ const webScraper = async () => {
 
   // var proxy = proxyList[Math.floor(Math.random() * proxyList.length)];
 
+  //OLD
   // { headless: false } use in launch to see browser for testing
   // { headless: "new" } change to new headless and stops warning
+  // const browser = await puppeteer.launch({
+  //   headless: "new",
+  //   // args: ["--proxy-server=" + proxy],
+  // });
+
   const browser = await puppeteer.launch({
-    headless: "new",
-    // args: ["--proxy-server=" + proxy],
+    args: process.env.IS_LOCAL ? puppeteer.defaultArgs() : chromium.args,
+    defaultViewport: chromium.defaultViewport,
+    executablePath: await chromium.executablePath(),
+    headless: chromium.headless,
   });
 
   try {

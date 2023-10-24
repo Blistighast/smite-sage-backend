@@ -7,7 +7,7 @@ provider:
   runtime: nodejs18.x
   stage: dev
   region: us-east-1
-  memorySize: 4096
+  memorySize: 1600
   usagePlan: # limit monthly invocations
     quota:
       limit: 1000000
