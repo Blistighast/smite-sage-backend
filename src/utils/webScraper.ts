@@ -1,5 +1,5 @@
-import puppeteer from "puppeteer";
-// import puppeteer from "puppeteer-core";
+// import puppeteer from "puppeteer";
+import puppeteer from "puppeteer-core";
 import chromium from "@sparticuz/chromium";
 
 import getDateFromTimeAgo from "./getDateFromTimeAgo";
@@ -22,21 +22,40 @@ const webScraper = async () => {
   //   headless: "new",
   // });
 
+  //local
   const browser = await puppeteer.launch({
-    // args: puppeteer.defaultArgs(),
     args: chromium.args,
-    // args: process.env.IS_LOCAL ? puppeteer.defaultArgs() : chromium.args,
     defaultViewport: chromium.defaultViewport,
-    // executablePath:
-    //   // await chromium.executablePath(),
-    //   "/tmp/localChromium/chromium/win64-1213059/chrome-win/chrome",
+    executablePath: process.env.IS_LOCAL
+      ? "/tmp/localChromium/chromium/win64-1213059/chrome-win/chrome"
+      : await chromium.executablePath(),
 
-    // executablePath: process.env.IS_LOCAL
-    //   ? "/tmp/localChromium/chromium/win64-1213798/chrome-win/chrome.exe"
-    //   : await chromium.executablePath(), //use local chrome install in dev
-    // headless: false,
-    headless: chromium.headless,
+    headless: process.env.IS_LOCAL ? "new" : chromium.headless,
   });
+
+  // const browser = await puppeteer.launch({
+  //   // args: puppeteer.defaultArgs(),
+  //   args: chromium.args,
+  //   defaultViewport: chromium.defaultViewport,
+  //   executablePath:
+  //     "/tmp/localChromium/chromium/win64-1213059/chrome-win/chrome",
+
+  //   headless: "new",
+  // });
+
+  // const browser = await puppeteer.launch({
+  //   args: chromium.args,
+  //   // args: process.env.IS_LOCAL ? puppeteer.defaultArgs() : chromium.args,
+  //   defaultViewport: chromium.defaultViewport,
+  //   executablePath: await chromium.executablePath(),
+
+  //   // executablePath: process.env.IS_LOCAL
+  //   //   ? "/tmp/localChromium/chromium/win64-1213059/chrome-win/chrome"
+  //   //   : await chromium.executablePath(), //use local chrome install in dev
+
+  //   headless: chromium.headless,
+  //   // headless: process.env.IS_LOCAL ? false : chromium.headless,
+  // });
   console.log("launched puppeteer");
 
   try {
