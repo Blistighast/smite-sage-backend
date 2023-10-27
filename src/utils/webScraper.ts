@@ -1,4 +1,3 @@
-// import puppeteer from "puppeteer";
 import puppeteer from "puppeteer-core";
 import chromium from "@sparticuz/chromium";
 
@@ -31,17 +30,9 @@ const webScraper = async () => {
       : await chromium.executablePath(),
 
     headless: process.env.IS_LOCAL ? "new" : chromium.headless,
+    ignoreHTTPSErrors: true,
+    userDataDir: "/dev/null",
   });
-
-  // const browser = await puppeteer.launch({
-  //   // args: puppeteer.defaultArgs(),
-  //   args: chromium.args,
-  //   defaultViewport: chromium.defaultViewport,
-  //   executablePath:
-  //     "/tmp/localChromium/chromium/win64-1213059/chrome-win/chrome",
-
-  //   headless: "new",
-  // });
 
   // const browser = await puppeteer.launch({
   //   args: chromium.args,

@@ -18,6 +18,7 @@ const articleUpdater = async () => {
     }
   });
 
+  console.log("article upload done");
   return articles;
 };
 

@@ -31,14 +31,9 @@ functions:
           method: ANY
           cors: true
 
-package:
-  exclude:
-    - node_modules/puppeteer/.local-chromium/**
-
 plugins:
   - serverless-offline
   - serverless-plugin-typescript
-  # - serverless-plugin-chrome
 
 custom:
   serverless-offline:

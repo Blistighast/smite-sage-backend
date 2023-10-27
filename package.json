@@ -13,7 +13,6 @@
   "author": "Brian Guterl",
   "license": "ISC",
   "dependencies": {
-    "@serverless-chrome/lambda": "^1.0.0-57.2",
     "@sparticuz/chromium": "^112.0.2",
     "cors": "^2.8.5",
     "crypto-js": "^4.1.1",
@@ -23,17 +22,13 @@
     "mongoose": "^6.9.0",
     "node-cron": "^3.0.2",
     "node-fetch": "^2.6.8",
-    "puppeteer": "^20.9.0",
     "puppeteer-core": "19.8",
     "serverless-http": "^3.2.0",
-    "superagent": "^8.1.2",
     "typescript": "^4.8.0"
   },
   "devDependencies": {
     "@types/node": "^18.11.18",
-    "chrome-launcher": "^1.1.0",
     "serverless-offline": "^12.0.4",
-    "serverless-plugin-chrome": "^1.0.0-55.3",
     "serverless-plugin-typescript": "^2.1.5"
   }
 }
