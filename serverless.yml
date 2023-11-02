@@ -7,7 +7,7 @@ provider:
   runtime: nodejs18.x
   stage: dev
   region: us-east-1
-  memorySize: 4096
+  memorySize: 768
   timeout: 30
   # usagePlan: # limit monthly invocations
   #   quota:
@@ -34,8 +34,14 @@ functions:
 plugins:
   - serverless-offline
   - serverless-plugin-typescript
+  - serverless-domain-manager
 
 custom:
   serverless-offline:
     noPrependStageInUrl: true
     httpPort: 4000
+  customDomain:
+    domainName: awsapi.smitesage.com
+    certificateName: "*.smitesage.com"
+    basePath: "/"
+    stage: ${self:provider.stage}
