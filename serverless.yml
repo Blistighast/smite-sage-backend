@@ -42,6 +42,6 @@ custom:
     httpPort: 4000
   customDomain:
     domainName: awsapi.smitesage.com
-    certificateName: "*.smitesage.com"
-    basePath: "/"
+    certificateName: "awsapi.smitesage.com"
+    basePath: ""
     stage: ${self:provider.stage}
