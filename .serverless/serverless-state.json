@@ -176,7 +176,7 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/smite-sage-backend/dev/1698890451497-2023-11-02T02:00:51.497Z/smite-sage-backend.zip"
+                "S3Key": "serverless/smite-sage-backend/dev/1699079346839-2023-11-04T06:29:06.839Z/smite-sage-backend.zip"
               },
               "Handler": "src/index.handler",
               "Runtime": "nodejs18.x",
@@ -194,14 +194,14 @@
               "AppLogGroup"
             ]
           },
-          "AppLambdaVersionkRGyasNes5BSAgR42ZpOV55M0vTO379mPVu5ymRdM": {
+          "AppLambdaVersionxwMr2mFuP9JSikqaTDLNmYGOTYVxkUo2C3DSSFPArI": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "AppLambdaFunction"
               },
-              "CodeSha256": "vO2z32sAex3JAfzuCagTqTyqyZ1LWYR+mg76PJLOg6g="
+              "CodeSha256": "bLtmGlQsF2HcQPNswuuG/93Pu804GAmldxoZi9c2fpk="
             }
           },
           "ApiGatewayRestApi": {
@@ -419,7 +419,7 @@
               "AppLambdaPermissionApiGateway"
             ]
           },
-          "ApiGatewayDeployment1698890412905": {
+          "ApiGatewayDeployment1699079279847": {
             "Type": "AWS::ApiGateway::Deployment",
             "Properties": {
               "RestApiId": {
@@ -484,7 +484,7 @@
           "AppLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "AppLambdaVersionkRGyasNes5BSAgR42ZpOV55M0vTO379mPVu5ymRdM"
+              "Ref": "AppLambdaVersionxwMr2mFuP9JSikqaTDLNmYGOTYVxkUo2C3DSSFPArI"
             },
             "Export": {
               "Name": "sls-smite-sage-backend-dev-AppLambdaFunctionQualifiedArn"
@@ -606,11 +606,18 @@
       "serverless-offline": {
         "noPrependStageInUrl": true,
         "httpPort": 4000
+      },
+      "customDomain": {
+        "domainName": "awsapi.smitesage.com",
+        "certificateName": "awsapi.smitesage.com",
+        "basePath": "",
+        "stage": "dev"
       }
     },
     "plugins": [
       "serverless-offline",
-      "serverless-plugin-typescript"
+      "serverless-plugin-typescript",
+      "serverless-domain-manager"
     ],
     "pluginsData": {},
     "functions": {
@@ -678,7 +685,7 @@
         "timeout": 30,
         "runtime": "nodejs18.x",
         "vpc": {},
-        "versionLogicalId": "AppLambdaVersionkRGyasNes5BSAgR42ZpOV55M0vTO379mPVu5ymRdM"
+        "versionLogicalId": "AppLambdaVersionxwMr2mFuP9JSikqaTDLNmYGOTYVxkUo2C3DSSFPArI"
       }
     },
     "configValidationMode": "warn",
@@ -705,7 +712,7 @@
     "artifact": "C:\\Users\\brian\\OneDrive\\Desktop\\React Apps\\Smite Sage\\smite-sage-backend\\.build\\.serverless\\smite-sage-backend.zip"
   },
   "package": {
-    "artifactDirectoryName": "serverless/smite-sage-backend/dev/1698890451497-2023-11-02T02:00:51.497Z",
+    "artifactDirectoryName": "serverless/smite-sage-backend/dev/1699079346839-2023-11-04T06:29:06.839Z",
     "artifact": "smite-sage-backend.zip"
   }
 }

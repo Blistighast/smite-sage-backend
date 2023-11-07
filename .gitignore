@@ -7,4 +7,5 @@ keystone.db
 .csv
 .build
 .serverless
+/.serverless
 undefined
