@@ -30,6 +30,10 @@ functions:
           path: /{proxy+}
           method: ANY
           cors: true
+  updater:
+    handler: src/db/cronUpdateChecker.handler
+    events:
+      - schedule: rate(1 minute)
 
 plugins:
   - serverless-offline

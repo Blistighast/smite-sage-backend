@@ -2,6 +2,7 @@ import serverless from "serverless-http";
 import express from "express";
 import cors from "cors";
 import mongoose from "mongoose";
+
 import "dotenv/config";
 
 // Routes
@@ -15,6 +16,7 @@ import articleRouter from "./routes/Article";
 const app = express();
 const port = process.env.PORT || 4000;
 
+let conn = null;
 const databaseUrl = process.env.dataBaseUrl;
 
 // app.listen(port, () => console.log(`listening on port ${port}`));
