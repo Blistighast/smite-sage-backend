@@ -16,7 +16,7 @@ import articleRouter from "./routes/Article";
 const app = express();
 const port = process.env.PORT || 4000;
 
-let conn = null;
+// let conn = null;
 const databaseUrl = process.env.dataBaseUrl;
 
 // app.listen(port, () => console.log(`listening on port ${port}`));
@@ -29,6 +29,7 @@ app.use(
 
 // to stop mongoose warning of future mongoose update
 mongoose.set("strictQuery", true);
+
 mongoose.connect(databaseUrl);
 
 app.get("/", (_req, res) => {

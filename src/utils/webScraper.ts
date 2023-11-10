@@ -14,13 +14,6 @@ const webScraper = async () => {
 
   retry++;
 
-  //OLD
-  // { headless: false } use in launch to see browser for testing
-  // { headless: "new" } change to new headless and stops warning
-  // const browser = await puppeteer.launch({
-  //   headless: "new",
-  // });
-
   //local
   const browser = await puppeteer.launch({
     args: chromium.args,
@@ -34,19 +27,6 @@ const webScraper = async () => {
     userDataDir: "/dev/null",
   });
 
-  // const browser = await puppeteer.launch({
-  //   args: chromium.args,
-  //   // args: process.env.IS_LOCAL ? puppeteer.defaultArgs() : chromium.args,
-  //   defaultViewport: chromium.defaultViewport,
-  //   executablePath: await chromium.executablePath(),
-
-  //   // executablePath: process.env.IS_LOCAL
-  //   //   ? "/tmp/localChromium/chromium/win64-1213059/chrome-win/chrome"
-  //   //   : await chromium.executablePath(), //use local chrome install in dev
-
-  //   headless: chromium.headless,
-  //   // headless: process.env.IS_LOCAL ? false : chromium.headless,
-  // });
   console.log("launched puppeteer");
 
   try {
