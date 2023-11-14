@@ -14,7 +14,6 @@ const webScraper = async () => {
 
   retry++;
 
-  //local
   const browser = await puppeteer.launch({
     args: chromium.args,
     defaultViewport: chromium.defaultViewport,
