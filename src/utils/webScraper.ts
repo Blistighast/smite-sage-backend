@@ -2,14 +2,31 @@ import puppeteer from "puppeteer-core";
 import chromium from "@sparticuz/chromium";
 
 import getDateFromTimeAgo from "./getDateFromTimeAgo";
+import ArticleModel from "./../schema/articleSchema";
 import "dotenv/config";
+
+interface ArticleProps {
+  article: {
+    _id: number;
+    type: string;
+    articleUrl: string;
+    headline: string;
+    datePosted: string;
+    imageUrl: string;
+  };
+}
 
 let retry = 0;
 let maxRetries = 5;
 
 const webScraper = async () => {
-  const newsUrl = "https://www.smitegame.com/news/";
+  const latestExistingArticle = await ArticleModel.find()
+    .sort({ createdAt: -1 })
+    .limit(1);
 
+  console.log(`latest article: ${latestExistingArticle}`);
+
+  const newsUrl = "https://www.smitegame.com/news/";
   console.log(`scraping ${newsUrl}`);
 
   retry++;
