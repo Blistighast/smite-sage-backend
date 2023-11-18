@@ -6,20 +6,21 @@ const articleUpdater = async () => {
   const articles = await webScraper();
 
   console.log(`articles scraped`);
-  console.log(articles);
+  // console.log(articles);
 
-  // articles.forEach(async (article) => {
-  //   const dbarticle = await ArticleModel.find({
-  //     articleUrl: article.articleUrl,
-  //   });
+  articles.forEach(async (article) => {
+    console.log(`article: ${article}`);
+    // const dbarticle = await ArticleModel.find({
+    //   articleUrl: article.articleUrl,
+    // });
 
-  //   if (dbarticle.length) {
-  //     console.log("already exists not adding");
-  //   } else {
-  //     console.log("adding article");
-  //     await ArticleModel.create(article);
-  //   }
-  // });
+    // if (dbarticle.length) {
+    //   console.log("already exists not adding");
+    // } else {
+    //   console.log("adding article");
+    //   await ArticleModel.create(article);
+    // }
+  });
 
   return articles;
 };

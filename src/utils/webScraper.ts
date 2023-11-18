@@ -99,6 +99,7 @@ const webScraper = async () => {
         );
         break;
       }
+
       try {
         let page = await browser.newPage();
         console.log(`scraping ${article.headline}`);
