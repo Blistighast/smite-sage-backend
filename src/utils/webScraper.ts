@@ -13,8 +13,6 @@ const webScraper = async () => {
     .sort({ createdAt: -1 })
     .limit(1);
 
-  console.log(`latest article: ${latestExistingArticle[0].headline}`);
-
   const newsUrl = "https://www.smitegame.com/news/";
   console.log(`scraping ${newsUrl}`);
 
