@@ -33,8 +33,8 @@ functions:
   updater:
     handler: src/db/cronUpdateChecker.handler
     events:
-      # - schedule: rate(24 hours)
-      - schedule: rate(1 minute)
+      - schedule: rate(24 hours)
+      # - schedule: rate(1 minute)
 
 plugins:
   - serverless-offline
