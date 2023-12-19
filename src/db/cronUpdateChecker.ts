@@ -1,15 +1,19 @@
-import cron from "node-cron";
+import mongoose from "mongoose";
+import "dotenv/config";
 
 import patchUpdater from "../db/patchUpdater";
 import articleUpdater from "../db/articleUpdater";
 
-//check if version has changed once every 24 hours, if yes update gods & items, check if any new article released
-cron.schedule("0 0 * * *", async () => {
+const databaseUrl = process.env.dataBaseUrl;
+
+const updaterCron = async () => {
+  console.log("running cron job");
+
+  mongoose.set("strictQuery", true);
+  mongoose.connect(databaseUrl);
+
   await patchUpdater();
   await articleUpdater();
-});
+};
 
-// setInterval(async () => {
-// await patchUpdater();
-// await articleUpdater();
-// }, 1000 * 60 * 60 * 24);
+module.exports.handler = updaterCron;

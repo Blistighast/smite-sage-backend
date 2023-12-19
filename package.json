@@ -5,19 +5,16 @@
   "private": true,
   "scripts": {
     "start": "nodemon src/index.ts",
-    "build": "rimraf dist && tsc",
+    "deploy": "sls deploy",
+    "offline": "sls offline start",
+    "domain": "sls create_domain",
     "ts.check": "tsc --project tsconfig.json",
-    "add-build": "git add dist",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "pre-commit": [
-    "ts.check",
-    "build",
-    "add-build"
-  ],
   "author": "Brian Guterl",
   "license": "ISC",
   "dependencies": {
+    "@sparticuz/chromium": "^112.0.2",
     "cors": "^2.8.5",
     "crypto-js": "^4.1.1",
     "dotenv": "^16.0.3",
@@ -26,12 +23,14 @@
     "mongoose": "^6.9.0",
     "node-cron": "^3.0.2",
     "node-fetch": "^2.6.8",
-    "puppeteer": "^20.1.0",
+    "puppeteer-core": "19.8",
+    "serverless-http": "^3.2.0",
     "typescript": "^4.8.0"
   },
   "devDependencies": {
     "@types/node": "^18.11.18",
-    "pre-commit": "^1.2.2",
-    "rimraf": "^5.0.0"
+    "serverless-domain-manager": "^7.1.2",
+    "serverless-offline": "^12.0.4",
+    "serverless-plugin-typescript": "^2.1.5"
   }
 }

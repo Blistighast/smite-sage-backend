@@ -19,6 +19,7 @@ const databaseUrl = process.env.dataBaseUrl;
 app.listen(port, () => console.log(`listening on port ${port}`));
 app.use((0, cors_1.default)({
     origin: [process.env.frontendUrl || "http://localhost:3000"],
+    optionsSuccessStatus: 200,
 }));
 mongoose_1.default.set("strictQuery", true);
 mongoose_1.default.connect(databaseUrl);

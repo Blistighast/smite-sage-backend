@@ -4,3 +4,8 @@
 keystone.db
 *.log
 .env
+.csv
+.build
+.serverless
+/.serverless
+undefined

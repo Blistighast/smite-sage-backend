@@ -1,0 +1,52 @@
+service: smite-sage-backend
+frameworkVersion: "3"
+useDotenv: true
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+  stage: dev
+  region: us-east-1
+  memorySize: 768
+  timeout: 30
+  # usagePlan: # limit monthly invocations
+  #   quota:
+  #     limit: 1000000
+  #     offset: 2
+  #     period: MONTH
+  #   throttle:
+  #     burstLimit: 200
+  #     rateLimit: 100
+
+functions:
+  app:
+    handler: src/index.handler
+    events:
+      - http:
+          path: /
+          method: ANY
+          cors: true
+      - http:
+          path: /{proxy+}
+          method: ANY
+          cors: true
+  updater:
+    handler: src/db/cronUpdateChecker.handler
+    events:
+      - schedule: rate(24 hours)
+      # - schedule: rate(1 minute)
+
+plugins:
+  - serverless-offline
+  - serverless-plugin-typescript
+  - serverless-domain-manager
+
+custom:
+  serverless-offline:
+    noPrependStageInUrl: true
+    httpPort: 4000
+  customDomain:
+    domainName: awsapi.smitesage.com
+    certificateName: "awsapi.smitesage.com"
+    basePath: ""
+    stage: ${self:provider.stage}

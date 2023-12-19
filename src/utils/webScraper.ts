@@ -1,31 +1,36 @@
-import puppeteer from "puppeteer";
+import puppeteer from "puppeteer-core";
+import chromium from "@sparticuz/chromium";
+
 import getDateFromTimeAgo from "./getDateFromTimeAgo";
+import ArticleModel from "./../schema/articleSchema";
+import "dotenv/config";
 
 let retry = 0;
 let maxRetries = 5;
 
 const webScraper = async () => {
-  const newsUrl = "https://www.smitegame.com/news/";
+  const latestExistingArticle = await ArticleModel.find()
+    .sort({ createdAt: -1 })
+    .limit(1);
 
+  const newsUrl = "https://www.smitegame.com/news/";
   console.log(`scraping ${newsUrl}`);
 
   retry++;
 
-  // let proxyList = [
-  //   "202.131.234.142:39330",
-  //   "45.235.216.112:8080",
-  //   "129.146.249.135:80",
-  //   "148.251.20.79",
-  // ];
-
-  // var proxy = proxyList[Math.floor(Math.random() * proxyList.length)];
-
-  // { headless: false } use in launch to see browser for testing
-  // { headless: "new" } change to new headless and stops warning
   const browser = await puppeteer.launch({
-    headless: "new",
-    // args: ["--proxy-server=" + proxy],
+    args: chromium.args,
+    defaultViewport: chromium.defaultViewport,
+    executablePath: process.env.IS_LOCAL
+      ? "/tmp/localChromium/chromium/win64-1213059/chrome-win/chrome"
+      : await chromium.executablePath(),
+
+    headless: process.env.IS_LOCAL ? "new" : chromium.headless,
+    ignoreHTTPSErrors: true,
+    userDataDir: "/dev/null",
   });
+
+  console.log("launched puppeteer");
 
   try {
     const page = await browser.newPage();
@@ -86,6 +91,14 @@ const webScraper = async () => {
     const articles = [];
 
     for (let article of articleTiles) {
+      if (article.headline === latestExistingArticle[0].headline) {
+        console.log(
+          `article ${article.headline} already exists, stopping scrape`
+        );
+        await page.close();
+        break;
+      }
+
       try {
         let page = await browser.newPage();
         console.log(`scraping ${article.headline}`);
@@ -105,21 +118,24 @@ const webScraper = async () => {
           datePosted: getDateFromTimeAgo(article.datePosted),
           imageUrl: articleImage,
         });
+        await page.close();
       } catch (err) {
         console.error(err);
       }
     }
-
-    await browser.close();
+    console.log(articles);
+    console.log("scrape done");
     return articles;
   } catch (err) {
     console.error(err);
-    await browser.close();
     console.log("scrape failed");
     if (retry < maxRetries) {
       console.log("retrying scrape");
       webScraper();
     }
+  } finally {
+    await browser.close();
+    console.log("browser closed");
   }
 };
 

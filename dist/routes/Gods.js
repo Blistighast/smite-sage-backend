@@ -28,7 +28,7 @@ router.get("/", (_req, resp) => __awaiter(void 0, void 0, void 0, function* () {
 }));
 router.get("/latestgod", (_req, resp) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const god = yield godSchema_1.default.find({ Name: "Ix Chel" });
+        const god = yield godSchema_1.default.find().sort({ createdAt: -1 }).limit(1);
         resp.json(god);
     }
     catch (error) {
