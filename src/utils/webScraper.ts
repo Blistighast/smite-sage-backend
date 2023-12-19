@@ -122,9 +122,9 @@ const webScraper = async () => {
         console.error(err);
       }
     }
-
-    await browser.close();
+    console.log(articles);
     console.log("scrape done");
+    await browser.close();
     return articles;
   } catch (err) {
     console.error(err);
