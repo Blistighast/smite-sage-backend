@@ -12,7 +12,7 @@ const updaterCron = async () => {
   mongoose.set("strictQuery", true);
   mongoose.connect(databaseUrl);
 
-  // await patchUpdater();
+  await patchUpdater();
   await articleUpdater();
 };
 

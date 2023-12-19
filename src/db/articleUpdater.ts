@@ -13,6 +13,8 @@ const articleUpdater = async () => {
       articleUrl: article.articleUrl,
     });
 
+    // console.log(`dbarticle: ${dbarticle}`);
+
     if (dbarticle.length) {
       console.log("already exists not adding");
     } else {

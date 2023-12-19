@@ -95,6 +95,7 @@ const webScraper = async () => {
         console.log(
           `article ${article.headline} already exists, stopping scrape`
         );
+        await page.close();
         break;
       }
 
@@ -124,16 +125,17 @@ const webScraper = async () => {
     }
     console.log(articles);
     console.log("scrape done");
-    await browser.close();
     return articles;
   } catch (err) {
     console.error(err);
-    await browser.close();
     console.log("scrape failed");
     if (retry < maxRetries) {
       console.log("retrying scrape");
       webScraper();
     }
+  } finally {
+    await browser.close();
+    console.log("browser closed");
   }
 };
 
