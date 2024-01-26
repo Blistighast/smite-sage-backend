@@ -74,7 +74,10 @@ const webScraper = async () => {
               type: "godInfo",
               ...article,
             };
-          } else if (subhead === "Dev Insights,News") {
+          } else if (
+            subhead === "Dev Insights,News" &&
+            tile.querySelector(".headline").textContent.includes("season")
+          ) {
             return {
               type: "seasonInfo",
               ...article,
