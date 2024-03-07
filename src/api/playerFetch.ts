@@ -21,7 +21,6 @@ const playerFetch = async (playerName) => {
     playerData[0] = null;
     console.log(`${playerName} not found, returning null`);
   }
-  console.log(playerData);
   return playerData[0];
 };
 
