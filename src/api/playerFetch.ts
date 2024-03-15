@@ -5,6 +5,7 @@ import "dotenv/config";
 import createSignature from "../utils/createSignature";
 import createSession from "../utils/createSession";
 import { session } from "./session";
+import playerGodFetch from "./playerGodsFetch";
 
 const apiUrl = process.env.apiUrl;
 const devId = process.env.devId;
@@ -20,7 +21,10 @@ const playerFetch = async (playerName) => {
   if (!playerData[0]) {
     playerData[0] = null;
     console.log(`${playerName} not found, returning null`);
+    return playerData[0];
   }
+  const playerGodData = playerGodFetch(playerData[0].Id);
+  console.log(playerGodData);
   return playerData[0];
 };
 
