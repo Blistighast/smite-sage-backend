@@ -25,7 +25,7 @@ const playerFetch = async (playerName) => {
   }
   const playerGodData = playerGodFetch(playerData[0].Id);
   console.log(playerGodData);
-  return playerData[0];
+  return [playerData[0], playerGodData];
 };
 
 export default playerFetch;

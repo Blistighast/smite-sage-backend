@@ -16,8 +16,7 @@ const playerGodFetch = async (playerId) => {
   const getPlayerGodUrl = `${apiUrl}/getgodranksjson/${devId}/${signature}/${session}/${timeStamp}/${playerId}`;
   const playerGodResp = await fetch(getPlayerGodUrl);
   const playerGodData = await playerGodResp.json();
-  console.log(playerGodData);
-  return;
+  return playerGodData;
 };
 
 export default playerGodFetch;
