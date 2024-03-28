@@ -23,9 +23,9 @@ const playerFetch = async (playerName) => {
     console.log(`${playerName} not found, returning null`);
     return playerData[0];
   }
-  const playerGodData = playerGodFetch(playerData[0].Id);
-  console.log(playerGodData);
-  return [playerData[0], playerGodData];
+  const playerGodData = await playerGodFetch(playerData[0].Id);
+  playerData[0].playerGodData = playerGodData;
+  return playerData[0];
 };
 
 export default playerFetch;
