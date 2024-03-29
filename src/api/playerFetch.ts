@@ -6,6 +6,7 @@ import createSignature from "../utils/createSignature";
 import createSession from "../utils/createSession";
 import { session } from "./session";
 import playerGodFetch from "./playerGodsFetch";
+import playerMatchFetch from "./playerMatchFetch";
 
 const apiUrl = process.env.apiUrl;
 const devId = process.env.devId;
@@ -24,7 +25,9 @@ const playerFetch = async (playerName) => {
     return playerData[0];
   }
   const playerGodData = await playerGodFetch(playerData[0].Id);
+  const playerMatchData = await playerMatchFetch(playerData[0].Id);
   playerData[0].playerGodData = playerGodData;
+  playerData[0].playerMatchData = playerMatchData;
   return playerData[0];
 };
 

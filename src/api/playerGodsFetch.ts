@@ -20,19 +20,3 @@ const playerGodFetch = async (playerId) => {
 };
 
 export default playerGodFetch;
-
-// example data :
-// {
-//   Assists: 49,
-//   Deaths: 17,
-//   Kills: 21,
-//   Losses: 4,
-//   MinionKills: 406,
-//   Rank: 1,
-//   Wins: 4,
-//   Worshippers: 82,
-//   god: 'Tyr',
-//   god_id: '1924',
-//   player_id: '709171487',
-//   ret_msg: null
-// },
